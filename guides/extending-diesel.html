@@ -1,0 +1,606 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Extending Diesel - diesel.rs</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="A guide to diesel.rs">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="../favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="../favicon.png">
+        
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">About Diesel</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="../guides/index.html"><strong aria-hidden="true">1.</strong> Guides to Diesel</a></li><li class="chapter-item expanded "><a href="../guides/getting-started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="../guides/all-about-updates.html"><strong aria-hidden="true">3.</strong> All About Updates</a></li><li class="chapter-item expanded "><a href="../guides/all-about-inserts.html"><strong aria-hidden="true">4.</strong> All About Inserts</a></li><li class="chapter-item expanded "><a href="../guides/composing-applications.html"><strong aria-hidden="true">5.</strong> Composing Applications with Diesel</a></li><li class="chapter-item expanded "><a href="../guides/schema-in-depth.html"><strong aria-hidden="true">6.</strong> Schema in Depth</a></li><li class="chapter-item expanded "><a href="../guides/extending-diesel.html" class="active"><strong aria-hidden="true">7.</strong> Extending Diesel</a></li><li class="chapter-item expanded "><a href="../guides/configuring-diesel-cli.html"><strong aria-hidden="true">8.</strong> Configuring Diesel CLI</a></li><li class="chapter-item expanded affix "><li class="part-title">Docs</li><li class="chapter-item expanded "><a href="../docs/index.html"><strong aria-hidden="true">9.</strong> API documentation</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">diesel.rs</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/diesel-rs/diesel" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="extending-diesel"><a class="header" href="#extending-diesel">Extending Diesel</a></h1>
+<p>Diesel provides a lot of capabilities out of the box.
+However, it doesn't necessarily provide everything your app may want to use.
+One of Diesel's greatest strengths
+is that it can be extended to add new functionality.</p>
+<p>In this guide we'll look at several ways to hook into Diesel's query builder,
+both to add new capabilities,
+and to introduce new abstractions.</p>
+<p>This guide is only going to cover extending the query builder.
+How to add support for new SQL types will be covered in a future guide.</p>
+<h2 id="sql_function"><a class="header" href="#sql_function"><code>sql_function!</code></a></h2>
+<p>The easiest and most common way to extend Diesel's query builder
+is by declaring a new SQL function.
+This can be used for functions defined by your database,
+or for built-in functions that Diesel doesn't support out of the box.</p>
+<p>Functions in SQL often have multiple signatures,
+making them difficult or impossible to represent in Rust.
+Because of this, Diesel only provides support for a small number
+of built-in SQL functions.
+Consider <code>COALESCE</code>.
+This function can take any number of arguments,
+and its return type changes based on whether any arguments are <code>NOT NULL</code>.
+While we can't easily represent that in Rust,
+we can use <code>sql_function!</code> to declare it with the exact signature we're using.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use diesel::types::{Nullable, Text};
+sql_function!(coalesce, Coalesce, (x: Nullable&lt;Text&gt;, y: Text) -&gt; Text);
+
+users.select(coalesce(hair_color, &quot;blue&quot;))
+<span class="boring">}
+</span></code></pre></pre>
+<p>As this example shows,
+<code>sql_function!</code> converts its argument like other parts of the query builder.
+This means that the generated function can take both Diesel expressions,
+and Rust values to be sent with the query.</p>
+<p>The macro takes three arguments:</p>
+<ul>
+<li>A function name</li>
+<li>A type name</li>
+<li>A type signature</li>
+</ul>
+<p>The type signature uses the same syntax as a normal Rust function.
+However, the types given are SQL types,
+not concrete Rust types.
+This is what allows us to pass both columns and Rust strings.
+If we defined this function manually, it would look like this:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn coalesce&lt;X, Y&gt;(x: X, y: Y) -&gt; Coalesce&lt;X::Expression, Y::Expression&gt;
+where
+    X: AsExpression&lt;Nullable&lt;Text&gt;&gt;,
+    Y: AsExpression&lt;Text&gt;,
+<span class="boring">}
+</span></code></pre></pre>
+<p>The type name given as the second argument is almost never used.
+Instead, a helper type is generated with the same name as the function.
+This helper type handles Diesel's argument conversion.
+This lets us write <code>coalesce&lt;hair_color, &amp;str&gt;</code>
+instead of <code>Coalesce&lt;hair_color, Bound&lt;Text, &amp;str&gt;&gt;</code>.</p>
+<h2 id="using-custom-sql-and-how-to-extend-the-query-dsl"><a class="header" href="#using-custom-sql-and-how-to-extend-the-query-dsl">Using Custom SQL and How to Extend the Query DSL</a></h2>
+<p>Often times it's useful to encapsulate a common SQL pattern.
+For example, if you're doing pagination on your queries,
+PostgreSQL is capable of loading the total count in a single query.
+The query you would want to execute would look like this:</p>
+<pre><code class="language-sql">SELECT *, COUNT(*) OVER () FROM (subselect t) LIMIT $1 OFFSET $1
+</code></pre>
+<p>However, as of version 1.0,
+Diesel doesn't support window functions, or selecting from a subselect.
+Even if Diesel's query builder supported those things,
+this is a case that is easier to reason about in terms of the SQL we want to
+generate.</p>
+<p>Let's look at how we would go about adding a <code>paginate</code> method to Diesel's query
+builder, to generate that query.
+Let's assume for the time being that we have a struct <code>Paginated&lt;T&gt;</code> already.
+We'll look at the specifics of this struct shortly.</p>
+<p>If you are creating a struct where you want to manually define the SQL,
+you will need to implement a trait called <code>QueryFragment</code>.
+The implementation will look like this:</p>
+<p>src/pagination.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/advanced-blog-cli/src/pagination.rs#L54-L68">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;T&gt; QueryFragment&lt;Pg&gt; for Paginated&lt;T&gt;
+where
+    T: QueryFragment&lt;Pg&gt;,
+{
+    fn walk_ast(&amp;self, mut out: AstPass&lt;Pg&gt;) -&gt; QueryResult&lt;()&gt; {
+        out.push_sql(&quot;SELECT *, COUNT(*) OVER () FROM (&quot;);
+        self.query.walk_ast(out.reborrow())?;
+        out.push_sql(&quot;) LIMIT &quot;);
+        out.push_bind_param::&lt;BigInt, _&gt;(&amp;self.limit())?;
+        out.push_sql(&quot; OFFSET &quot;);
+        out.push_bind_param::&lt;BigInt, _&gt;(&amp;self.offset())?;
+        Ok(())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>For details on what each method does,
+see the documentation for <a href="https://docs.diesel.rs/diesel/query_builder/struct.AstPass.html"><code>AstPass</code></a>.
+One important question to ask whenever you implement <code>QueryFragment</code>
+is whether you are generating a query that is safe to cache.
+The way to answer this question is by asking
+&quot;does this struct generate an unlimited number of potential SQL queries&quot;?
+Typically that is only the case if the body of <code>walk_ast</code> contains a for loop.
+If your query is not safe to cache, you <em>must</em> call
+<code>out.unsafe_to_cache_prepared</code>.</p>
+<p>Whenever you implement <code>QueryFragment</code>, you also need to implement <a href="https://docs.diesel.rs/diesel/query_builder/trait.QueryId.html"><code>QueryId</code></a>.
+We can use the <a href="https://docs.diesel.rs/diesel/macro.impl_query_id.html"><code>impl_query_id!</code></a> macro for this.
+Since this struct represents a full query which can be executed,
+we will implement <a href="https://docs.diesel.rs/diesel/query_dsl/trait.RunQueryDsl.html"><code>RunQueryDsl</code></a> which adds methods like <a href="https://docs.diesel.rs/diesel/query_dsl/trait.RunQueryDsl.html#method.execute"><code>execute</code></a> and <a href="https://docs.diesel.rs/diesel/query_dsl/trait.RunQueryDsl.html#method.load"><code>load</code></a>.
+Since this query has a return type,
+we'll implement <a href="https://docs.diesel.rs/diesel/query_builder/trait.Query.html"><code>Query</code></a> which states the return type as well.</p>
+<p>src/pagination.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/advanced-blog-cli/src/pagination.rs#L48-L52">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl_query_id!(Paginated&lt;T&gt;);
+
+impl&lt;T: Query&gt; Query for Paginated&lt;T&gt; {
+    type SqlType = (T::SqlType, BigInt);
+}
+
+impl&lt;T&gt; RunQueryDsl&lt;PgConnection&gt; for Paginated&lt;T&gt; {}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Now that we've implemented all of these things,
+let's look at how we would go about constructing this.
+We'll want to add a <code>paginate</code> method to all Diesel queries,
+which specifies which page we're on,
+as well as a <code>per_page</code> method which specifies the number of elements per page.</p>
+<p>In order to add new methods to existing types, we can use a trait.</p>
+<p>src/pagination.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/advanced-blog-cli/src/pagination.rs#L7-L33">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait Paginate: AsQuery + Sized {
+    fn paginate(self, page: i64) -&gt; Paginated&lt;Self::Query&gt; {
+        Paginated {
+            query: self.as_query(),
+            page,
+            per_page: DEFAULT_PER_PAGE,
+         }
+    }
+}
+
+impl&lt;T: AsQuery&gt; Paginate for T {}
+
+const DEFAULT_PER_PAGE: i64 = 10;
+
+pub struct Paginated&lt;T&gt; {
+    query: T,
+    page: i64,
+    per_page: i64,
+}
+
+impl Paginated&lt;T&gt; {
+    pub fn per_page(self, per_page: i64) -&gt; Self {
+        Paginated { per_page, ..self }
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Now we can get the third page of a query with 25 elements per page like this:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>users::table
+    .paginate(3)
+    .per_page(25)
+<span class="boring">}
+</span></code></pre></pre>
+<p>With this code,
+we could load any query into a <code>Vec&lt;(T, i64)&gt;</code>,
+but we can do better.
+When doing pagination,
+you usually want the records and the total number of pages.
+We can write that method.</p>
+<p>src/pagination.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/advanced-blog-cli/src/pagination.rs#L35-L45">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;T&gt; Paginated&lt;T&gt; {
+    fn load_and_count_pages&lt;U&gt;(self, conn: &amp;PgConnection) -&gt; QueryResult&lt;(Vec&lt;U&gt;, i64)
+    where
+        Self: LoadQuery&lt;PgConnection, (U, i64)&gt;,
+    {
+        let per_page = self.per_page;
+        let results = self.load::&lt;(U, i64)&gt;(conn)?;
+        let total = results.get(0).map(|(_, total) total|).unwrap_or(0);
+        let records = results.into_iter().map(|(record, _)| record).collect();
+        let total_pages = (total as f64 / per_page as f64).ceil() as i64;
+        Ok((records, total_pages))
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>This is one of the rare cases where we want to define a function that takes a
+connection.
+One benefit of defining the function this way
+is that if we wanted to support backends other than PostgreSQL,
+we could have this function execute two queries.</p>
+<p>You can find the full code for this example in <a href="https://github.com/diesel-rs/diesel/tree/v1.4.4/examples/postgres/advanced-blog-cli">the &quot;advanced blog&quot; example</a>.</p>
+<h2 id="custom-operators"><a class="header" href="#custom-operators">Custom Operators</a></h2>
+<p>If you're adding support for a new type to Diesel,
+or working with a type that has incomplete support,
+you may wish to add support for the operators associated with that type.
+The term operator refers to anything that uses one of these syntaxes:</p>
+<ul>
+<li>Infix (e.g. <code>left OP right</code>)</li>
+<li>Prefix (e.g. <code>OP expr</code>)</li>
+<li>Postfix (e.g. <code>expr OP</code>)</li>
+</ul>
+<p>Diesel provides helper macros for defining each of these kinds of operators.
+In fact, Diesel uses these macros to declare nearly all of the operators
+supported by the main crate.
+The macros are
+<a href="https://docs.diesel.rs/diesel/macro.diesel_infix_operator.html"><code>diesel_infix_operator!</code></a>, <a href="https://docs.diesel.rs/diesel/macro.diesel_postfix_operator.html"><code>diesel_postfix_operator!</code></a> and
+<a href="https://docs.diesel.rs/diesel/macro.diesel_prefix_operator.html"><code>diesel_prefix_operator!</code></a>.</p>
+<p>All of these macros have the same signature.
+They take between two and four arguments.</p>
+<p>The first is the name of the struct you want to represent this operator.</p>
+<p>The second is the actual SQL for this operator.</p>
+<p>The third argument is optional, and is the SQL type of the operator.
+If the SQL type is not specified, it will default to <code>Bool</code>.
+You can also pass the &quot;magic&quot; type <code>ReturnBasedOnArgs</code>,
+which will cause the SQL type to be the same as the type of its arguments.
+Diesel uses this to make the string concatenation operator <code>||</code>
+return <code>Nullable&lt;Text&gt;</code> if the arguments are nullable,
+or <code>Text</code> if they are not null.</p>
+<p>The fourth argument (or third if you didn't specify the SQL type)
+is the backend this operator is used for.
+If you don't specify a backend,
+the operator can be used on all backends.</p>
+<p>Let's look at some example usage from Diesel:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// A simple operator. It returns `Bool` and works on all backends.
+diesel_infix_operator!(Eq, &quot; = &quot;);
+
+// Here we've specified the SQL type.
+// Since this operator is only used for ordering, and we don't want it used
+// elsewhere, we've made it `()` which is normally useless.
+diesel_postfix_operator!(Asc, &quot; ASC&quot;, ());
+
+// Concat uses the magic `ReturnBasedOnArgs` return type
+// so it can work with both `Text` and `Nullable&lt;Text&gt;`.
+diesel_infix_operator!(Concat, &quot; || &quot;, ReturnBasedOnArgs);
+
+// This operator is PG specific, so we specify the backend
+diesel_infix_operator!(IsDistinctFrom, &quot; IS DISTINCT FROM &quot;, backend: Pg);
+
+// This operator is PG specific, and we are also specifying the SQL type.
+diesel_postfix_operator!(NullsFirst, &quot; NULLS FIRST&quot;, (), backend: Pg);
+<span class="boring">}
+</span></code></pre></pre>
+<p>Diesel provides a proof-of-concept crate showing how to add new SQL types called
+<code>diesel_full_text_search</code>.
+These are the operators as they are defined in that crate.
+You'll notice all of the operators specify the backend,
+and many of them specify the return type.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel_full_text_search/blob/27b9946831caa8b08177c1818a50cb7f0563c9c0/src/lib.rs#L57-L62">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>diesel_infix_operator!(Matches, &quot; @@ &quot;, backend: Pg);
+diesel_infix_operator!(Concat, &quot; || &quot;, TsVector, backend: Pg);
+diesel_infix_operator!(And, &quot; &amp;&amp; &quot;, TsQuery, backend: Pg);
+diesel_infix_operator!(Or, &quot; || &quot;, TsQuery, backend: Pg);
+diesel_infix_operator!(Contains, &quot; @&gt; &quot;, backend: Pg);
+diesel_infix_operator!(ContainedBy, &quot; &lt;@ &quot;, backend: Pg);
+<span class="boring">}
+</span></code></pre></pre>
+<p>However, just declaring the operator by itself isn't very useful.
+This creates the types required by Diesel's query builder,
+but doesn't provide anything to help use the operator in real code.
+The structs created by these macros will have a <code>new</code> method,
+but that's not typically how you work with Diesel's query builder.</p>
+<ul>
+<li>Infix operators are usually methods on the left hand side.</li>
+<li>Postfix operators are usually methods on the expression.</li>
+<li>Prefix operators are usually bare functions.</li>
+</ul>
+<p>For operators that you create with methods,
+you would typically create a trait for this.
+For example, here's how the <code>.eq</code> method gets defined by Diesel.</p>
+<p>src/expression_methods/global_expression_methods.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/diesel/src/expression_methods/global_expression_methods.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait ExpressionMethods: Expression + Sized {
+    fn eq&lt;T: AsExpression&lt;Self::SqlType&gt;&gt;(self, other: T) -&gt; Eq&lt;Self, T::Expression&gt; {
+        Eq::new(self, other.as_expression())
+    }
+}
+
+impl&lt;T: Expression&gt; ExpressionMethods for T {}
+<span class="boring">}
+</span></code></pre></pre>
+<p>It's important to note that these methods are where you should put any type
+constraints.
+The structs defined by <code>diesel_*_operator!</code> don't know or care about what the
+types of the arguments should be.
+The <code>=</code> operator requires that both sides be of the same type,
+so we represent that in the type of <code>ExpressionMethods::eq</code>.</p>
+<p>You'll also notice that our argument is
+<code>AsExpression&lt;Self::SqlType&gt;</code>,
+not <code>Expression&lt;SqlType = Self::SqlType&gt;</code>.
+This allows Rust values to be passed as well as Diesel expressions.
+For example, we can do <code>text_col.eq(other_text_col)</code>,
+or <code>text_col.eq(&quot;Some Rust string&quot;)</code>.</p>
+<p>If the operator is specific to only one SQL type,
+we can represent that in our trait.</p>
+<p>src/expression_methods/global_expression_methods.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/diesel/src/expression_methods/bool_expression_methods.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait BoolExpressionMethods
+where
+    Self: Expression&lt;SqlType = Bool&gt; + Sized,
+{
+    fn and&lt;T: AsExpression&lt;Bool&gt;&gt;(self, other: T) -&gt; And&lt;Self, T::Expression&gt; {
+        And::new(self, other.as_expression())
+    }
+}
+
+impl&lt;T: Expression&lt;SqlType = Bool&gt;&gt; BoolExpressionMethods for T {}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Prefix operators are usually defined as bare functions.
+The code is very similar, but without the trait.
+Here's how <code>not</code> is defined in Diesel.</p>
+<p>src/expression/not.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/diesel/src/expression/not.rs#L27-L29">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn not&lt;T: AsExpression&lt;Bool&gt;&gt;(expr: T)
+    -&gt; Not&lt;Grouped&lt;T::Expression&gt;&gt;
+{
+    super::operators::Not::new(Grouped(expr.as_expression()))
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>In this case we're using <code>Grouped</code>
+(which is currently undocumented in Diesel and only used internally)
+to add parenthesis around our argument.
+This ensures that the operator precedence in SQL matches what's expected.
+For example, we would expect <code>not(true.and(false))</code> to return <code>true</code>.
+However, <code>SELECT NOT TRUE AND FALSE</code> returns <code>FALSE</code>.
+Diesel does the same thing with <code>.or</code>.</p>
+<p>It's also a best practice to expose a &quot;helper type&quot; for your method,
+which does the same type conversion as the method itself.
+Nobody wants to write <code>Eq&lt;text_col, &lt;&amp;str as AsExpression&lt;Text&gt;&gt;::Expression&gt;</code>.
+Instead, we provide a type that lets you write <code>Eq&lt;text_col, &amp;str&gt;</code>.</p>
+<p>src/expression/helper_types.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/diesel/src/expression/helper_types.rs#L20">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub type Eq&lt;Lhs, Rhs&gt; =
+    super::operators::Eq&lt;Lhs, AsExpr&lt;Rhs, Lhs&gt;&gt;;
+<span class="boring">}
+</span></code></pre></pre>
+<p>For defining these types,
+you'll usually want to make use of <a href="https://docs.diesel.rs/diesel/helper_types/type.SqlTypeOf.html"><code>SqlTypeOf</code></a>, <a href="https://docs.diesel.rs/diesel/helper_types/type.AsExpr.html"><code>AsExpr</code></a>, and <a href="https://docs.diesel.rs/diesel/helper_types/type.AsExprOf.html"><code>AsExprOf</code></a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../guides/schema-in-depth.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../guides/configuring-diesel-cli.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="../guides/schema-in-depth.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="../guides/configuring-diesel-cli.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

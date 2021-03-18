@@ -1,0 +1,625 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Getting started - diesel.rs</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="A guide to diesel.rs">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="../favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="../favicon.png">
+        
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">About Diesel</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="../guides/index.html"><strong aria-hidden="true">1.</strong> Guides to Diesel</a></li><li class="chapter-item expanded "><a href="../guides/getting-started.html" class="active"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="../guides/all-about-updates.html"><strong aria-hidden="true">3.</strong> All About Updates</a></li><li class="chapter-item expanded "><a href="../guides/all-about-inserts.html"><strong aria-hidden="true">4.</strong> All About Inserts</a></li><li class="chapter-item expanded "><a href="../guides/composing-applications.html"><strong aria-hidden="true">5.</strong> Composing Applications with Diesel</a></li><li class="chapter-item expanded "><a href="../guides/schema-in-depth.html"><strong aria-hidden="true">6.</strong> Schema in Depth</a></li><li class="chapter-item expanded "><a href="../guides/extending-diesel.html"><strong aria-hidden="true">7.</strong> Extending Diesel</a></li><li class="chapter-item expanded "><a href="../guides/configuring-diesel-cli.html"><strong aria-hidden="true">8.</strong> Configuring Diesel CLI</a></li><li class="chapter-item expanded affix "><li class="part-title">Docs</li><li class="chapter-item expanded "><a href="../docs/index.html"><strong aria-hidden="true">9.</strong> API documentation</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">diesel.rs</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/diesel-rs/diesel" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h1>
+<p>For this guide, we're going to walk through some simple examples for each of the pieces of CRUD,
+which stands for &quot;Create Read Update Delete&quot;. Each step in this guide will build on the previous,
+and is meant to be followed along.</p>
+<p><strong>This guide assumes that you're using PostgreSQL.</strong> Before we start,
+make sure you have PostgreSQL installed and running.</p>
+<blockquote>
+<p>A note on Rust versions:</p>
+<p>Diesel requires Rust 1.24 or later. If you're following along with this guide,
+make sure you're using at least that version of Rust by running <code>rustup update stable</code>.</p>
+</blockquote>
+<h2 id="install-diesel_cli"><a class="header" href="#install-diesel_cli">Install <code>diesel_cli</code></a></h2>
+<p>The first thing we need to do is generate our project.</p>
+<pre><code class="language-sh">cargo new --lib diesel_demo
+cd diesel_demo
+</code></pre>
+<p>First, let's add Diesel to our dependencies. We're also going to use a tool called
+<a href="https://github.com/dotenv-rs/dotenv"><code>.env</code></a> to manage our environment variables for us. We'll add it to our dependencies
+as well.</p>
+<p>Cargo.toml (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_1/Cargo.toml">View on GitHub</a>):</p>
+<pre><code class="language-toml">[dependencies]
+diesel = { version = &quot;1.4.4&quot;, features = [&quot;postgres&quot;] }
+dotenv = &quot;0.15.0&quot;
+</code></pre>
+<p>Diesel provides a separate <a href="https://github.com/diesel-rs/diesel/tree/master/diesel_cli">CLI</a> tool to help manage your project. Since it's a standalone binary,
+and doesn't affect your project's code directly, we don't add it to <code>Cargo.toml</code>.
+Instead, we just install it on our system.</p>
+<pre><code class="language-sh">cargo install diesel_cli
+</code></pre>
+<h3 id="a-note-on-installing-diesel_cli"><a class="header" href="#a-note-on-installing-diesel_cli">A note on installing <code>diesel_cli</code></a></h3>
+<p>If you run into an error like:</p>
+<pre><code>note: ld: library not found for -lmysqlclient
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+</code></pre>
+<p>This means you are missing the client library needed for a database backend
+– <code>mysqlclient</code> in this case. You can resolve this issue by either installing the library
+(using the usual way to do this depending on your operating system) or by excluding
+the undesired default library with the <code>--no-default-features</code> flag.</p>
+<p>For example, if you only have PostgreSQL installed, you can use this to install <code>diesel_cli</code>
+with only PostgreSQL:</p>
+<pre><code class="language-sh">cargo install diesel_cli --no-default-features --features postgres
+</code></pre>
+<h2 id="setup-diesel"><a class="header" href="#setup-diesel">Setup Diesel</a></h2>
+<p>We need to tell Diesel where to find our database. We do this by setting the <code>DATABASE_URL</code>
+environment variable. On our development machines, we'll likely have multiple projects going,
+and we don't want to pollute our environment. We can put the url in a <code>.env</code> file instead.</p>
+<pre><code class="language-sh">echo DATABASE_URL=postgres://username:password@localhost/diesel_demo &gt; .env
+</code></pre>
+<p>Now Diesel CLI can set everything up for us.</p>
+<pre><code>diesel setup
+</code></pre>
+<p>This will create our database (if it didn't already exist), and create an empty migrations directory
+that we can use to manage our schema (more on that later).</p>
+<p>Now we're going to write a small CLI that lets us manage a blog (ignoring the fact
+that we can only access the database from this CLI…). The first thing we're going to need is
+a table to store our posts. Let's create a migration for that:</p>
+<pre><code class="language-sh">diesel migration generate create_posts
+</code></pre>
+<p>Diesel CLI will create two empty files for us in the required structure.
+You'll see output that looks something like this:</p>
+<pre><code>Creating migrations/20160815133237_create_posts/up.sql
+Creating migrations/20160815133237_create_posts/down.sql
+</code></pre>
+<p>Migrations allow us to evolve the database schema over time. Each migration can be applied
+(<code>up.sql</code>) or reverted (<code>down.sql</code>). Applying and immediately reverting a migration should
+leave your database schema unchanged.</p>
+<p>Next, we'll write the SQL for migrations:</p>
+<p>up.sql (<a href="https://github.com/diesel-rs/diesel/tree/v1.4.4/examples/postgres/getting_started_step_1/migrations/20160815133237_create_posts">view on GitHub</a>):</p>
+<pre><code class="language-sql">CREATE TABLE posts (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR NOT NULL,
+  body TEXT NOT NULL,
+  published BOOLEAN NOT NULL DEFAULT 'f'
+)
+</code></pre>
+<p>down.sql:</p>
+<pre><code class="language-sql">DROP TABLE posts
+</code></pre>
+<p>We can apply our new migration:</p>
+<pre><code class="language-sh">diesel migration run
+</code></pre>
+<p>It's a good idea to make sure that <code>down.sql</code> is correct. You can quickly confirm that your <code>down.sql</code>
+rolls back your migration correctly by <code>redoing</code> the migration:</p>
+<pre><code>diesel migration redo
+</code></pre>
+<blockquote>
+<p>A Note on Raw SQL in Migrations:</p>
+<p>Since migrations are written in raw SQL, they can contain specific features of the database system you use.
+For example, the <code>CREATE TABLE</code> statement above uses PostgreSQL's <code>SERIAL</code> type. If you want to use SQLite instead,
+you need to use <code>INTEGER</code> instead.</p>
+</blockquote>
+<blockquote>
+<p>A Note on Using Migrations in Production:</p>
+<p>When preparing your app for use in production, you may want to run your migrations
+during the application's initialization phase. You may also want to include the migration scripts
+as a part of your code, to avoid having to copy them to your deployment location/image etc.</p>
+<p>The <a href="https://docs.rs/crate/diesel_migrations/">diesel_migrations</a> crate provides the <code>embed_migrations!</code> macro, allowing you to embed migration scripts
+in the final binary. Once your code uses it, you can simply include <code>embedded_migrations::run(&amp;db_conn)</code>
+at the start of your <code>main</code> function to run migrations every time the application starts.</p>
+</blockquote>
+<h2 id="write-rust"><a class="header" href="#write-rust">Write Rust</a></h2>
+<p>OK enough SQL, let's write some Rust. We'll start by writing some code to show the last five published posts.
+The first thing we need to do is establish a database connection.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_1/src/lib.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[macro_use]
+extern crate diesel;
+extern crate dotenv;
+
+use diesel::prelude::*;
+use diesel::pg::PgConnection;
+use dotenv::dotenv;
+use std::env;
+
+pub fn establish_connection() -&gt; PgConnection {
+    dotenv().ok();
+
+    let database_url = env::var(&quot;DATABASE_URL&quot;)
+        .expect(&quot;DATABASE_URL must be set&quot;);
+    PgConnection::establish(&amp;database_url)
+        .expect(&amp;format!(&quot;Error connecting to {}&quot;, database_url))
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>We'll also want to create a <code>Post</code> struct into which we can read our data, and have diesel generate the names
+we'll use to reference tables and columns in our queries.</p>
+<p>We'll add the following lines to the top of <code>src/lib.rs</code>:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod schema;
+pub mod models;
+<span class="boring">}
+</span></code></pre></pre>
+<p>Next we need to create the two modules that we just declared.</p>
+<p>src/models.rs:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Queryable)]
+pub struct Post {
+    pub id: i32,
+    pub title: String,
+    pub body: String,
+    pub published: bool,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>#[derive(Queryable)]</code> will generate all of the code needed to load a <code>Post</code> struct from a SQL query.</p>
+<p>Typically the schema module isn't created by hand, it gets generated by Diesel. When we ran <code>diesel setup</code>,
+a file called <a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_1/diesel.toml">diesel.toml</a> was created which tells Diesel to maintain a file at src/schema.rs for us.
+The file should look like this:</p>
+<p>src/schema.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_1/src/schema.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>table! {
+    posts (id) {
+        id -&gt; Integer,
+        title -&gt; Text,
+        body -&gt; Text,
+        published -&gt; Bool,
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The exact output might vary slightly depending on your database, but it should be equivalent.</p>
+<p>The <a href="https://docs.diesel.rs/diesel/macro.table.html"><code>table!</code> macro</a> creates a bunch of code based on the database schema to represent
+all of the tables and columns. We'll see how exactly to use that in the next example.</p>
+<p>Any time we run or revert a migration, this file will get automatically updated.</p>
+<blockquote>
+<p>A Note on Field Order</p>
+<p>Using <code>#[derive(Queryable)]</code> assumes that the order of fields on the <code>Post</code> struct matches
+the columns in the <code>posts</code> table, so make sure to define them in the order seen in the <code>schema.rs</code> file.</p>
+</blockquote>
+<p>Let's write the code to actually show us our posts.</p>
+<p>src/bin/show_posts.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_1/src/bin/show_posts.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">extern crate diesel_demo;
+extern crate diesel;
+
+use self::diesel_demo::*;
+use self::models::*;
+use self::diesel::prelude::*;
+
+fn main() {
+    use diesel_demo::schema::posts::dsl::*;
+
+    let connection = establish_connection();
+    let results = posts.filter(published.eq(true))
+        .limit(5)
+        .load::&lt;Post&gt;(&amp;connection)
+        .expect(&quot;Error loading posts&quot;);
+
+    println!(&quot;Displaying {} posts&quot;, results.len());
+    for post in results {
+        println!(&quot;{}&quot;, post.title);
+        println!(&quot;----------\n&quot;);
+        println!(&quot;{}&quot;, post.body);
+    }
+}
+</code></pre></pre>
+<p>The use <code>posts::dsl::*</code> line imports a bunch of aliases so that we can say <code>posts</code>
+instead of <code>posts::table</code>, and published instead of <code>posts::published</code>. It's useful
+when we're only dealing with a single table, but that's not always what we want.</p>
+<p>We can run our script with <code>cargo run --bin show_posts</code>. Unfortunately, the results
+won't be terribly interesting, as we don't actually have any posts in the database.
+Still, we've written a decent amount of code, so let's commit.</p>
+<p>The full code for the demo at this point can be found <a href="https://github.com/diesel-rs/diesel/tree/v1.4.4/examples/postgres/getting_started_step_1/">here</a>.</p>
+<p>Next, let's write some code to create a new post.We'll want a struct to use for inserting
+a new record.</p>
+<p>src/models.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_2/src/models.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use super::schema::posts;
+
+#[derive(Insertable)]
+#[table_name=&quot;posts&quot;]
+pub struct NewPost&lt;'a&gt; {
+    pub title: &amp;'a str,
+    pub body: &amp;'a str,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Now let's add a function to save a new post.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_2/src/lib.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use self::models::{Post, NewPost};
+
+pub fn create_post&lt;'a&gt;(conn: &amp;PgConnection, title: &amp;'a str, body: &amp;'a str) -&gt; Post {
+    use schema::posts;
+
+    let new_post = NewPost {
+        title: title,
+        body: body,
+    };
+
+    diesel::insert_into(posts::table)
+        .values(&amp;new_post)
+        .get_result(conn)
+        .expect(&quot;Error saving new post&quot;)
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>When we call <code>.get_result</code> on an insert or update statement, it automatically adds <code>RETURNING *</code>
+to the end of the query, and lets us load it into any struct that implements <code>Queryable</code>
+for the right types. Neat!</p>
+<p>Diesel can insert more than one record in a single query. Just pass a <code>Vec</code> or slice to <code>insert</code>,
+and then call <code>get_results</code> instead of <code>get_result</code>. If you don't actually want to do anything
+with the row that was just inserted, call <code>.execute</code> instead. The compiler won't complain
+at you, that way. :)</p>
+<p>Now that we've got everything set up, we can create a little script to write a new post.</p>
+<p>src/bin/write_post.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_2/src/bin/write_post.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">extern crate diesel_demo;
+extern crate diesel;
+
+use self::diesel_demo::*;
+use std::io::{stdin, Read};
+
+fn main() {
+    let connection = establish_connection();
+
+    println!(&quot;What would you like your title to be?&quot;);
+    let mut title = String::new();
+    stdin().read_line(&amp;mut title).unwrap();
+    let title = &amp;title[..(title.len() - 1)]; // Drop the newline character
+    println!(&quot;\nOk! Let's write {} (Press {} when finished)\n&quot;, title, EOF);
+    let mut body = String::new();
+    stdin().read_to_string(&amp;mut body).unwrap();
+
+    let post = create_post(&amp;connection, title, &amp;body);
+    println!(&quot;\nSaved draft {} with id {}&quot;, title, post.id);
+}
+
+#[cfg(not(windows))]
+const EOF: &amp;'static str = &quot;CTRL+D&quot;;
+
+#[cfg(windows)]
+const EOF: &amp;'static str = &quot;CTRL+Z&quot;;
+</code></pre></pre>
+<p>We can run our new script with <code>cargo run --bin write_post</code>. Go ahead and write a blog post.
+Get creative! Here was mine:</p>
+<pre><code>   Compiling diesel_demo v0.1.0 (file:///Users/sean/Documents/Projects/open-source/diesel_demo)
+     Running `target/debug/write_post`
+
+What would you like your title to be?
+Diesel demo
+
+Ok! Let's write Diesel demo (Press CTRL+D when finished)
+
+You know, a CLI application probably isn't the best interface for a blog demo.
+But really I just wanted a semi-simple example, where I could focus on Diesel.
+I didn't want to get bogged down in some web framework here.
+Plus I don't really like the Rust web frameworks out there. We might make a
+new one, soon.
+
+Saved draft Diesel demo with id 1
+</code></pre>
+<p>Unfortunately, running <code>show_posts</code> still won't display our new post,
+because we saved it as a draft. If we look back to the code in
+<code>show_posts</code>, we added <code>.filter(published.eq(true))</code>, and we had
+<code>published</code> default to false in our migration. We need to publish it!
+But in order to do that, we'll need to look at how to update an
+existing record. First, let's commit. The code for this demo at this
+point can be found <a href="https://github.com/diesel-rs/diesel/tree/v1.4.4/examples/postgres/getting_started_step_2/">here</a>.</p>
+<p>Now that we've got create and read out of the way, update is actually
+relatively simple. Let's jump right into the script:</p>
+<p>src/bin/publish_post.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_3/src/bin/publish_post.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">extern crate diesel_demo;
+extern crate diesel;
+
+use self::diesel::prelude::*;
+use self::diesel_demo::*;
+use self::models::Post;
+use std::env::args;
+
+fn main() {
+    use diesel_demo::schema::posts::dsl::{posts, published};
+
+    let id = args().nth(1).expect(&quot;publish_post requires a post id&quot;)
+        .parse::&lt;i32&gt;().expect(&quot;Invalid ID&quot;);
+    let connection = establish_connection();
+
+    let post = diesel::update(posts.find(id))
+        .set(published.eq(true))
+        .get_result::&lt;Post&gt;(&amp;connection)
+        .expect(&amp;format!(&quot;Unable to find post {}&quot;, id));
+    println!(&quot;Published post {}&quot;, post.title);
+}
+</code></pre></pre>
+<p>hat's it! Let's try it out with <code>cargo run --bin publish_post 1</code>.</p>
+<pre><code> Compiling diesel_demo v0.1.0 (file:///Users/sean/Documents/Projects/open-source/diesel_demo)
+   Running `target/debug/publish_post 1`
+Published post Diesel demo
+</code></pre>
+<p>And now, finally, we can see our post with <code>cargo run --bin show_posts</code>.</p>
+<pre><code>     Running `target/debug/show_posts`
+Displaying 1 posts
+Diesel demo
+----------
+
+You know, a CLI application probably isn't the best interface for a blog demo.
+But really I just wanted a semi-simple example, where I could focus on Diesel.
+I didn't want to get bogged down in some web framework here.
+Plus I don't really like the Rust web frameworks out there. We might make a
+new one, soon.
+</code></pre>
+<p>We've still only covered three of the four letters of CRUD though. Let's show
+how to delete things. Sometimes we write something we really hate, and
+we don't have time to look up the ID. So let's delete based on the
+title, or even just some words in the title.</p>
+<p>src/bin/delete_post.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_3/src/bin/delete_post.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">extern crate diesel_demo;
+extern crate diesel;
+
+use self::diesel::prelude::*;
+use self::diesel_demo::*;
+use std::env::args;
+
+fn main() {
+    use diesel_demo::schema::posts::dsl::*;
+
+    let target = args().nth(1).expect(&quot;Expected a target to match against&quot;);
+    let pattern = format!(&quot;%{}%&quot;, target);
+
+    let connection = establish_connection();
+    let num_deleted = diesel::delete(posts.filter(title.like(pattern)))
+        .execute(&amp;connection)
+        .expect(&quot;Error deleting posts&quot;);
+
+    println!(&quot;Deleted {} posts&quot;, num_deleted);
+}
+</code></pre></pre>
+<p>We can run the script with <code>cargo run --bin delete_post</code> demo (at least with the title I chose).
+Your output should look something like:</p>
+<pre><code>   Compiling diesel_demo v0.1.0 (file:///Users/sean/Documents/Projects/open-source/diesel_demo)
+     Running `target/debug/delete_post demo`
+Deleted 1 posts
+</code></pre>
+<p>When we try to run <code>cargo run --bin show_post</code>s again, we can see that the post was in fact deleted.
+This barely scratches the surface of what you can do with Diesel, but hopefully this tutorial
+has given you a good foundation to build off of. We recommend exploring the <a href="../docs/index.html">API docs</a> to see more.
+The final code for this tutorial can be found <a href="https://github.com/diesel-rs/diesel/tree/v1.4.4/examples/postgres/getting_started_step_3/">here</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../guides/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../guides/all-about-updates.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="../guides/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="../guides/all-about-updates.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

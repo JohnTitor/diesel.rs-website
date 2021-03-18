@@ -1,0 +1,2463 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>diesel.rs</title>
+        
+        <meta name="robots" content="noindex" />
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="A guide to diesel.rs">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="favicon.png">
+        
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        
+        <link rel="stylesheet" href="css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">About Diesel</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="guides/index.html"><strong aria-hidden="true">1.</strong> Guides to Diesel</a></li><li class="chapter-item expanded "><a href="guides/getting-started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="guides/all-about-updates.html"><strong aria-hidden="true">3.</strong> All About Updates</a></li><li class="chapter-item expanded "><a href="guides/all-about-inserts.html"><strong aria-hidden="true">4.</strong> All About Inserts</a></li><li class="chapter-item expanded "><a href="guides/composing-applications.html"><strong aria-hidden="true">5.</strong> Composing Applications with Diesel</a></li><li class="chapter-item expanded "><a href="guides/schema-in-depth.html"><strong aria-hidden="true">6.</strong> Schema in Depth</a></li><li class="chapter-item expanded "><a href="guides/extending-diesel.html"><strong aria-hidden="true">7.</strong> Extending Diesel</a></li><li class="chapter-item expanded "><a href="guides/configuring-diesel-cli.html"><strong aria-hidden="true">8.</strong> Configuring Diesel CLI</a></li><li class="chapter-item expanded affix "><li class="part-title">Docs</li><li class="chapter-item expanded "><a href="docs/index.html"><strong aria-hidden="true">9.</strong> API documentation</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">diesel.rs</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/diesel-rs/diesel" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="diesel"><a class="header" href="#diesel">Diesel</a></h1>
+<blockquote>
+<p>Find a mistake on this website? Submit an issue or send a pull request <a href="https://github.com/sgrif/diesel.rs-website">here</a>!</p>
+</blockquote>
+<p>Diesel is a Safe, Extensible ORM and Query Builder for <a href="https://www.rust-lang.org">Rust</a>.
+Diesel is the most productive way to interact with databases in Rust
+because of its safe and composable abstractions over queries.</p>
+<h2 id="why-did-we-make-diesel"><a class="header" href="#why-did-we-make-diesel">Why did we make Diesel?</a></h2>
+<h3 id="preventing-runtime-errors"><a class="header" href="#preventing-runtime-errors">Preventing Runtime Errors</a></h3>
+<p>We don't want to waste time tracking down runtime errors. We achieve this
+by having Diesel eliminate the possibility of incorrect database interactions at compile time.</p>
+<h3 id="built-for-performance"><a class="header" href="#built-for-performance">Built for Performance</a></h3>
+<p>Diesel offers a high level query builder and lets you think about your problems in Rust, not SQL.
+Our focus on zero-cost abstractions allows Diesel to run your query and load your data even faster than C.</p>
+<h3 id="productive-and-extensible"><a class="header" href="#productive-and-extensible">Productive and Extensible</a></h3>
+<p>Unlike Active Record and other ORMs, Diesel is designed to be abstracted over.
+Diesel enables you to write reusable code and think in terms of your problem domain and not SQL.</p>
+<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<h3 id="simple-queries"><a class="header" href="#simple-queries">Simple queries</a></h3>
+<p>Simple queries are a complete breeze. Loading all users from a database:</p>
+<p>Rust code:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>users::table.load(&amp;connection);
+<span class="boring">}
+</span></code></pre></pre>
+<p>Executed SQL:</p>
+<pre><code class="language-sql">SELECT * FROM users;
+</code></pre>
+<p>Loading all the posts for a user:</p>
+<p>Rust code:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Post::belonging_to(user).load(&amp;connection);
+<span class="boring">}
+</span></code></pre></pre>
+<p>Executed SQL:</p>
+<pre><code class="language-sql">SELECT * FROM posts WHERE user_id = 1;
+</code></pre>
+<h3 id="complex-queries"><a class="header" href="#complex-queries">Complex queries</a></h3>
+<p>Diesel's powerful query builder helps you construct queries as simple or complex
+as you need, at 0 cost.</p>
+<p>Rust code:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let versions = Version::belonging_to(krate)
+    .select(id)
+    .order(num.desc())
+    .limit(5);
+let downloads = version_downloads
+    .filter(date.gt(now - 90.days()))
+    .filter(version_id.eq(any(versions)))
+    .order(date)
+    .load::&lt;Download&gt;(&amp;conn)?;
+<span class="boring">}
+</span></code></pre></pre>
+<p>Executed SQL:</p>
+<pre><code class="language-sql">SELECT version_downloads.*
+  WHERE date &gt; (NOW() - '90 days')
+    AND version_id = ANY(
+      SELECT id FROM versions
+        WHERE crate_id = 1
+        ORDER BY num DESC
+        LIMIT 5
+    )
+  ORDER BY date
+</code></pre>
+<h3 id="less-boilerplate"><a class="header" href="#less-boilerplate">Less Boilerplate</a></h3>
+<p>Diesel codegen generates boilerplate for you. It lets you focus on your business logic,
+not mapping to and from SQL rows.</p>
+<p>That means you can write this:</p>
+<p>With Diesel:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Queryable)]
+pub struct Download {
+    id: i32,
+    version_id: i32,
+    downloads: i32,
+    counted: i32,
+    date: SystemTime,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Instead of this:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct Download {
+    id: i32,
+    version_id: i32,
+    downloads: i32,
+    counted: i32,
+    date: SystemTime,
+}
+
+impl Download {
+    fn from_row(row: &amp;Row) -&gt; Download {
+        Download {
+            id: row.get(&quot;id&quot;),
+            version_id: row.get(&quot;version_id&quot;),
+            downloads: row.get(&quot;downloads&quot;),
+            counted: row.get(&quot;counted&quot;),
+            date: row.get(&quot;date&quot;),
+        }
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="inserting-data"><a class="header" href="#inserting-data">Inserting Data</a></h3>
+<p>It's not just about reading data. Diesel makes it easy to use structs for new records.</p>
+<p>Rust code:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Insertable)]
+#[table_name=&quot;users&quot;]
+struct NewUser&lt;'a&gt; {
+    name: &amp;'a str,
+    hair_color: Option&lt;&amp;'a str&gt;,
+}
+
+let new_users = vec![
+    NewUser { name: &quot;Sean&quot;, hair_color: Some(&quot;Black&quot;) },
+    NewUser { name: &quot;Gordon&quot;, hair_color: None },
+];
+
+insert_into(users)
+    .values(&amp;new_users)
+    .execute(&amp;connection);
+<span class="boring">}
+</span></code></pre></pre>
+<p>Executed SQL:</p>
+<pre><code class="language-sql">INSERT INTO users (name, hair_color) VALUES
+  ('Sean', 'Black'),
+  ('Gordon', DEFAULT)
+</code></pre>
+<p>If you need data from the rows you inserted, just change execute to <code>get_result</code> or <code>get_results</code>.
+Diesel will take care of the rest.</p>
+<p>Rust code:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let new_users = vec![
+    NewUser { name: &quot;Sean&quot;, hair_color: Some(&quot;Black&quot;) },
+    NewUser { name: &quot;Gordon&quot;, hair_color: None },
+];
+
+let inserted_users = insert_into(users)
+    .values(&amp;new_users)
+    .get_results::&lt;User&gt;(&amp;connection);
+<span class="boring">}
+</span></code></pre></pre>
+<p>Executed SQL:</p>
+<pre><code class="language-sql">INSERT INTO users (name, hair_color) VALUES
+  ('Sean', 'Black'),
+  ('Gordon', DEFAULT)
+  RETURNING *
+</code></pre>
+<h3 id="updating-data"><a class="header" href="#updating-data">Updating Data</a></h3>
+<p>Diesel's codegen can generate several ways to update a row,
+letting you encapsulate your logic in the way that makes sense for your app.</p>
+<p>Modifying a struct:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>post.published = true;
+post.save_changes(&amp;connection);
+<span class="boring">}
+</span></code></pre></pre>
+<p>One-off batch changes:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>update(users.filter(email.like(&quot;%@spammer.com&quot;)))
+    .set(banned.eq(true))
+    .execute(&amp;connection);
+<span class="boring">}
+</span></code></pre></pre>
+<p>Using a struct for encapsulation:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>update(Settings::belonging_to(current_user))
+    .set(&amp;settings_form)
+    .execute(&amp;connection);
+<span class="boring">}
+</span></code></pre></pre>
+<h3 id="ergonomic-raw-sql"><a class="header" href="#ergonomic-raw-sql">Ergonomic Raw SQL</a></h3>
+<p>There will always be certain queries that are just easier to write as raw SQL,
+or can't be expressed with the query builder. Even in these cases, Diesel provides
+an easy to use API for writing raw SQL.</p>
+<p>Running raw SQL:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(QueryableByName)]
+#[table_name = &quot;users&quot;]
+struct User {
+    id: i32,
+    name: String,
+    organization_id: i32,
+}
+
+// Using `include_str!` allows us to keep the SQL in a
+// separate file, where our editor can give us SQL specific
+// syntax highlighting.
+sql_query(include_str!(&quot;complex_users_by_organization.sql&quot;))
+    .bind::&lt;Integer, _&gt;(organization_id)
+    .bind::&lt;BigInt, _&gt;(offset)
+    .bind::&lt;BigInt, _&gt;(limit)
+    .load::&lt;User&gt;(conn)?;
+<span class="boring">}
+</span></code></pre></pre>
+<h1 id="guides-to-diesel"><a class="header" href="#guides-to-diesel">Guides to Diesel</a></h1>
+<h2 id="a-hrefguidesgetting-startedhtmlgetting-starteda"><a class="header" href="#a-hrefguidesgetting-startedhtmlgetting-starteda"><a href="guides/./getting-started.html">Getting Started</a></a></h2>
+<p>Everything you need to know to install and configure Diesel, and create your first application.</p>
+<h2 id="a-hrefguidesall-about-updateshtmlall-about-updatesa"><a class="header" href="#a-hrefguidesall-about-updateshtmlall-about-updatesa"><a href="guides/./all-about-updates.html">All About Updates</a></a></h2>
+<p>This guide covers everything you need to know about constructing UPDATE queries with Diesel.</p>
+<h2 id="a-hrefguidesall-about-insertshtmlall-about-insertsa"><a class="header" href="#a-hrefguidesall-about-insertshtmlall-about-insertsa"><a href="guides/./all-about-inserts.html">All About Inserts</a></a></h2>
+<p>Just like the last guide, but this guide covers INSERT queries.</p>
+<h2 id="a-hrefguidescomposing-applicationshtmlcomposing-applications-with-diesela"><a class="header" href="#a-hrefguidescomposing-applicationshtmlcomposing-applications-with-diesela"><a href="guides/./composing-applications.html">Composing Applications with Diesel</a></a></h2>
+<p>This guide covers how to structure your application, and best practices for reusing code.</p>
+<h2 id="a-hrefguidesschema-in-depthhtmlschema-in-deptha"><a class="header" href="#a-hrefguidesschema-in-depthhtmlschema-in-deptha"><a href="guides/./schema-in-depth.html">Schema in Depth</a></a></h2>
+<p>Ever wondered what exactly diesel print-schema and table! are doing?
+This guide will walk you through exactly what code gets generated, and how it's done.</p>
+<h2 id="a-hrefguidesextending-dieselhtmlextending-diesela"><a class="header" href="#a-hrefguidesextending-dieselhtmlextending-diesela"><a href="guides/./extending-diesel.html">Extending Diesel</a></a></h2>
+<p>Want to use a feature Diesel doesn't support? Have a user defined SQL function?
+Wish Diesel had custom query helpers (like pagination)?
+This guide will cover everything you need to know about extending Diesel
+with new functionality.</p>
+<h2 id="a-hrefguidesconfiguring-diesel-clihtmlconfiguring-diesel-clia"><a class="header" href="#a-hrefguidesconfiguring-diesel-clihtmlconfiguring-diesel-clia"><a href="guides/./configuring-diesel-cli.html">Configuring Diesel CLI</a></a></h2>
+<p>This guide will cover all available configuration options in <code>diesel.toml</code>, and what they do.</p>
+<h1 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h1>
+<p>For this guide, we're going to walk through some simple examples for each of the pieces of CRUD,
+which stands for &quot;Create Read Update Delete&quot;. Each step in this guide will build on the previous,
+and is meant to be followed along.</p>
+<p><strong>This guide assumes that you're using PostgreSQL.</strong> Before we start,
+make sure you have PostgreSQL installed and running.</p>
+<blockquote>
+<p>A note on Rust versions:</p>
+<p>Diesel requires Rust 1.24 or later. If you're following along with this guide,
+make sure you're using at least that version of Rust by running <code>rustup update stable</code>.</p>
+</blockquote>
+<h2 id="install-diesel_cli"><a class="header" href="#install-diesel_cli">Install <code>diesel_cli</code></a></h2>
+<p>The first thing we need to do is generate our project.</p>
+<pre><code class="language-sh">cargo new --lib diesel_demo
+cd diesel_demo
+</code></pre>
+<p>First, let's add Diesel to our dependencies. We're also going to use a tool called
+<a href="https://github.com/dotenv-rs/dotenv"><code>.env</code></a> to manage our environment variables for us. We'll add it to our dependencies
+as well.</p>
+<p>Cargo.toml (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_1/Cargo.toml">View on GitHub</a>):</p>
+<pre><code class="language-toml">[dependencies]
+diesel = { version = &quot;1.4.4&quot;, features = [&quot;postgres&quot;] }
+dotenv = &quot;0.15.0&quot;
+</code></pre>
+<p>Diesel provides a separate <a href="https://github.com/diesel-rs/diesel/tree/master/diesel_cli">CLI</a> tool to help manage your project. Since it's a standalone binary,
+and doesn't affect your project's code directly, we don't add it to <code>Cargo.toml</code>.
+Instead, we just install it on our system.</p>
+<pre><code class="language-sh">cargo install diesel_cli
+</code></pre>
+<h3 id="a-note-on-installing-diesel_cli"><a class="header" href="#a-note-on-installing-diesel_cli">A note on installing <code>diesel_cli</code></a></h3>
+<p>If you run into an error like:</p>
+<pre><code>note: ld: library not found for -lmysqlclient
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+</code></pre>
+<p>This means you are missing the client library needed for a database backend
+– <code>mysqlclient</code> in this case. You can resolve this issue by either installing the library
+(using the usual way to do this depending on your operating system) or by excluding
+the undesired default library with the <code>--no-default-features</code> flag.</p>
+<p>For example, if you only have PostgreSQL installed, you can use this to install <code>diesel_cli</code>
+with only PostgreSQL:</p>
+<pre><code class="language-sh">cargo install diesel_cli --no-default-features --features postgres
+</code></pre>
+<h2 id="setup-diesel"><a class="header" href="#setup-diesel">Setup Diesel</a></h2>
+<p>We need to tell Diesel where to find our database. We do this by setting the <code>DATABASE_URL</code>
+environment variable. On our development machines, we'll likely have multiple projects going,
+and we don't want to pollute our environment. We can put the url in a <code>.env</code> file instead.</p>
+<pre><code class="language-sh">echo DATABASE_URL=postgres://username:password@localhost/diesel_demo &gt; .env
+</code></pre>
+<p>Now Diesel CLI can set everything up for us.</p>
+<pre><code>diesel setup
+</code></pre>
+<p>This will create our database (if it didn't already exist), and create an empty migrations directory
+that we can use to manage our schema (more on that later).</p>
+<p>Now we're going to write a small CLI that lets us manage a blog (ignoring the fact
+that we can only access the database from this CLI…). The first thing we're going to need is
+a table to store our posts. Let's create a migration for that:</p>
+<pre><code class="language-sh">diesel migration generate create_posts
+</code></pre>
+<p>Diesel CLI will create two empty files for us in the required structure.
+You'll see output that looks something like this:</p>
+<pre><code>Creating migrations/20160815133237_create_posts/up.sql
+Creating migrations/20160815133237_create_posts/down.sql
+</code></pre>
+<p>Migrations allow us to evolve the database schema over time. Each migration can be applied
+(<code>up.sql</code>) or reverted (<code>down.sql</code>). Applying and immediately reverting a migration should
+leave your database schema unchanged.</p>
+<p>Next, we'll write the SQL for migrations:</p>
+<p>up.sql (<a href="https://github.com/diesel-rs/diesel/tree/v1.4.4/examples/postgres/getting_started_step_1/migrations/20160815133237_create_posts">view on GitHub</a>):</p>
+<pre><code class="language-sql">CREATE TABLE posts (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR NOT NULL,
+  body TEXT NOT NULL,
+  published BOOLEAN NOT NULL DEFAULT 'f'
+)
+</code></pre>
+<p>down.sql:</p>
+<pre><code class="language-sql">DROP TABLE posts
+</code></pre>
+<p>We can apply our new migration:</p>
+<pre><code class="language-sh">diesel migration run
+</code></pre>
+<p>It's a good idea to make sure that <code>down.sql</code> is correct. You can quickly confirm that your <code>down.sql</code>
+rolls back your migration correctly by <code>redoing</code> the migration:</p>
+<pre><code>diesel migration redo
+</code></pre>
+<blockquote>
+<p>A Note on Raw SQL in Migrations:</p>
+<p>Since migrations are written in raw SQL, they can contain specific features of the database system you use.
+For example, the <code>CREATE TABLE</code> statement above uses PostgreSQL's <code>SERIAL</code> type. If you want to use SQLite instead,
+you need to use <code>INTEGER</code> instead.</p>
+</blockquote>
+<blockquote>
+<p>A Note on Using Migrations in Production:</p>
+<p>When preparing your app for use in production, you may want to run your migrations
+during the application's initialization phase. You may also want to include the migration scripts
+as a part of your code, to avoid having to copy them to your deployment location/image etc.</p>
+<p>The <a href="https://docs.rs/crate/diesel_migrations/">diesel_migrations</a> crate provides the <code>embed_migrations!</code> macro, allowing you to embed migration scripts
+in the final binary. Once your code uses it, you can simply include <code>embedded_migrations::run(&amp;db_conn)</code>
+at the start of your <code>main</code> function to run migrations every time the application starts.</p>
+</blockquote>
+<h2 id="write-rust"><a class="header" href="#write-rust">Write Rust</a></h2>
+<p>OK enough SQL, let's write some Rust. We'll start by writing some code to show the last five published posts.
+The first thing we need to do is establish a database connection.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_1/src/lib.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[macro_use]
+extern crate diesel;
+extern crate dotenv;
+
+use diesel::prelude::*;
+use diesel::pg::PgConnection;
+use dotenv::dotenv;
+use std::env;
+
+pub fn establish_connection() -&gt; PgConnection {
+    dotenv().ok();
+
+    let database_url = env::var(&quot;DATABASE_URL&quot;)
+        .expect(&quot;DATABASE_URL must be set&quot;);
+    PgConnection::establish(&amp;database_url)
+        .expect(&amp;format!(&quot;Error connecting to {}&quot;, database_url))
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>We'll also want to create a <code>Post</code> struct into which we can read our data, and have diesel generate the names
+we'll use to reference tables and columns in our queries.</p>
+<p>We'll add the following lines to the top of <code>src/lib.rs</code>:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod schema;
+pub mod models;
+<span class="boring">}
+</span></code></pre></pre>
+<p>Next we need to create the two modules that we just declared.</p>
+<p>src/models.rs:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Queryable)]
+pub struct Post {
+    pub id: i32,
+    pub title: String,
+    pub body: String,
+    pub published: bool,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>#[derive(Queryable)]</code> will generate all of the code needed to load a <code>Post</code> struct from a SQL query.</p>
+<p>Typically the schema module isn't created by hand, it gets generated by Diesel. When we ran <code>diesel setup</code>,
+a file called <a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_1/diesel.toml">diesel.toml</a> was created which tells Diesel to maintain a file at src/schema.rs for us.
+The file should look like this:</p>
+<p>src/schema.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_1/src/schema.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>table! {
+    posts (id) {
+        id -&gt; Integer,
+        title -&gt; Text,
+        body -&gt; Text,
+        published -&gt; Bool,
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The exact output might vary slightly depending on your database, but it should be equivalent.</p>
+<p>The <a href="https://docs.diesel.rs/diesel/macro.table.html"><code>table!</code> macro</a> creates a bunch of code based on the database schema to represent
+all of the tables and columns. We'll see how exactly to use that in the next example.</p>
+<p>Any time we run or revert a migration, this file will get automatically updated.</p>
+<blockquote>
+<p>A Note on Field Order</p>
+<p>Using <code>#[derive(Queryable)]</code> assumes that the order of fields on the <code>Post</code> struct matches
+the columns in the <code>posts</code> table, so make sure to define them in the order seen in the <code>schema.rs</code> file.</p>
+</blockquote>
+<p>Let's write the code to actually show us our posts.</p>
+<p>src/bin/show_posts.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_1/src/bin/show_posts.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">extern crate diesel_demo;
+extern crate diesel;
+
+use self::diesel_demo::*;
+use self::models::*;
+use self::diesel::prelude::*;
+
+fn main() {
+    use diesel_demo::schema::posts::dsl::*;
+
+    let connection = establish_connection();
+    let results = posts.filter(published.eq(true))
+        .limit(5)
+        .load::&lt;Post&gt;(&amp;connection)
+        .expect(&quot;Error loading posts&quot;);
+
+    println!(&quot;Displaying {} posts&quot;, results.len());
+    for post in results {
+        println!(&quot;{}&quot;, post.title);
+        println!(&quot;----------\n&quot;);
+        println!(&quot;{}&quot;, post.body);
+    }
+}
+</code></pre></pre>
+<p>The use <code>posts::dsl::*</code> line imports a bunch of aliases so that we can say <code>posts</code>
+instead of <code>posts::table</code>, and published instead of <code>posts::published</code>. It's useful
+when we're only dealing with a single table, but that's not always what we want.</p>
+<p>We can run our script with <code>cargo run --bin show_posts</code>. Unfortunately, the results
+won't be terribly interesting, as we don't actually have any posts in the database.
+Still, we've written a decent amount of code, so let's commit.</p>
+<p>The full code for the demo at this point can be found <a href="https://github.com/diesel-rs/diesel/tree/v1.4.4/examples/postgres/getting_started_step_1/">here</a>.</p>
+<p>Next, let's write some code to create a new post.We'll want a struct to use for inserting
+a new record.</p>
+<p>src/models.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_2/src/models.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use super::schema::posts;
+
+#[derive(Insertable)]
+#[table_name=&quot;posts&quot;]
+pub struct NewPost&lt;'a&gt; {
+    pub title: &amp;'a str,
+    pub body: &amp;'a str,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Now let's add a function to save a new post.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_2/src/lib.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use self::models::{Post, NewPost};
+
+pub fn create_post&lt;'a&gt;(conn: &amp;PgConnection, title: &amp;'a str, body: &amp;'a str) -&gt; Post {
+    use schema::posts;
+
+    let new_post = NewPost {
+        title: title,
+        body: body,
+    };
+
+    diesel::insert_into(posts::table)
+        .values(&amp;new_post)
+        .get_result(conn)
+        .expect(&quot;Error saving new post&quot;)
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>When we call <code>.get_result</code> on an insert or update statement, it automatically adds <code>RETURNING *</code>
+to the end of the query, and lets us load it into any struct that implements <code>Queryable</code>
+for the right types. Neat!</p>
+<p>Diesel can insert more than one record in a single query. Just pass a <code>Vec</code> or slice to <code>insert</code>,
+and then call <code>get_results</code> instead of <code>get_result</code>. If you don't actually want to do anything
+with the row that was just inserted, call <code>.execute</code> instead. The compiler won't complain
+at you, that way. :)</p>
+<p>Now that we've got everything set up, we can create a little script to write a new post.</p>
+<p>src/bin/write_post.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_2/src/bin/write_post.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">extern crate diesel_demo;
+extern crate diesel;
+
+use self::diesel_demo::*;
+use std::io::{stdin, Read};
+
+fn main() {
+    let connection = establish_connection();
+
+    println!(&quot;What would you like your title to be?&quot;);
+    let mut title = String::new();
+    stdin().read_line(&amp;mut title).unwrap();
+    let title = &amp;title[..(title.len() - 1)]; // Drop the newline character
+    println!(&quot;\nOk! Let's write {} (Press {} when finished)\n&quot;, title, EOF);
+    let mut body = String::new();
+    stdin().read_to_string(&amp;mut body).unwrap();
+
+    let post = create_post(&amp;connection, title, &amp;body);
+    println!(&quot;\nSaved draft {} with id {}&quot;, title, post.id);
+}
+
+#[cfg(not(windows))]
+const EOF: &amp;'static str = &quot;CTRL+D&quot;;
+
+#[cfg(windows)]
+const EOF: &amp;'static str = &quot;CTRL+Z&quot;;
+</code></pre></pre>
+<p>We can run our new script with <code>cargo run --bin write_post</code>. Go ahead and write a blog post.
+Get creative! Here was mine:</p>
+<pre><code>   Compiling diesel_demo v0.1.0 (file:///Users/sean/Documents/Projects/open-source/diesel_demo)
+     Running `target/debug/write_post`
+
+What would you like your title to be?
+Diesel demo
+
+Ok! Let's write Diesel demo (Press CTRL+D when finished)
+
+You know, a CLI application probably isn't the best interface for a blog demo.
+But really I just wanted a semi-simple example, where I could focus on Diesel.
+I didn't want to get bogged down in some web framework here.
+Plus I don't really like the Rust web frameworks out there. We might make a
+new one, soon.
+
+Saved draft Diesel demo with id 1
+</code></pre>
+<p>Unfortunately, running <code>show_posts</code> still won't display our new post,
+because we saved it as a draft. If we look back to the code in
+<code>show_posts</code>, we added <code>.filter(published.eq(true))</code>, and we had
+<code>published</code> default to false in our migration. We need to publish it!
+But in order to do that, we'll need to look at how to update an
+existing record. First, let's commit. The code for this demo at this
+point can be found <a href="https://github.com/diesel-rs/diesel/tree/v1.4.4/examples/postgres/getting_started_step_2/">here</a>.</p>
+<p>Now that we've got create and read out of the way, update is actually
+relatively simple. Let's jump right into the script:</p>
+<p>src/bin/publish_post.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_3/src/bin/publish_post.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">extern crate diesel_demo;
+extern crate diesel;
+
+use self::diesel::prelude::*;
+use self::diesel_demo::*;
+use self::models::Post;
+use std::env::args;
+
+fn main() {
+    use diesel_demo::schema::posts::dsl::{posts, published};
+
+    let id = args().nth(1).expect(&quot;publish_post requires a post id&quot;)
+        .parse::&lt;i32&gt;().expect(&quot;Invalid ID&quot;);
+    let connection = establish_connection();
+
+    let post = diesel::update(posts.find(id))
+        .set(published.eq(true))
+        .get_result::&lt;Post&gt;(&amp;connection)
+        .expect(&amp;format!(&quot;Unable to find post {}&quot;, id));
+    println!(&quot;Published post {}&quot;, post.title);
+}
+</code></pre></pre>
+<p>hat's it! Let's try it out with <code>cargo run --bin publish_post 1</code>.</p>
+<pre><code> Compiling diesel_demo v0.1.0 (file:///Users/sean/Documents/Projects/open-source/diesel_demo)
+   Running `target/debug/publish_post 1`
+Published post Diesel demo
+</code></pre>
+<p>And now, finally, we can see our post with <code>cargo run --bin show_posts</code>.</p>
+<pre><code>     Running `target/debug/show_posts`
+Displaying 1 posts
+Diesel demo
+----------
+
+You know, a CLI application probably isn't the best interface for a blog demo.
+But really I just wanted a semi-simple example, where I could focus on Diesel.
+I didn't want to get bogged down in some web framework here.
+Plus I don't really like the Rust web frameworks out there. We might make a
+new one, soon.
+</code></pre>
+<p>We've still only covered three of the four letters of CRUD though. Let's show
+how to delete things. Sometimes we write something we really hate, and
+we don't have time to look up the ID. So let's delete based on the
+title, or even just some words in the title.</p>
+<p>src/bin/delete_post.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/getting_started_step_3/src/bin/delete_post.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">extern crate diesel_demo;
+extern crate diesel;
+
+use self::diesel::prelude::*;
+use self::diesel_demo::*;
+use std::env::args;
+
+fn main() {
+    use diesel_demo::schema::posts::dsl::*;
+
+    let target = args().nth(1).expect(&quot;Expected a target to match against&quot;);
+    let pattern = format!(&quot;%{}%&quot;, target);
+
+    let connection = establish_connection();
+    let num_deleted = diesel::delete(posts.filter(title.like(pattern)))
+        .execute(&amp;connection)
+        .expect(&quot;Error deleting posts&quot;);
+
+    println!(&quot;Deleted {} posts&quot;, num_deleted);
+}
+</code></pre></pre>
+<p>We can run the script with <code>cargo run --bin delete_post</code> demo (at least with the title I chose).
+Your output should look something like:</p>
+<pre><code>   Compiling diesel_demo v0.1.0 (file:///Users/sean/Documents/Projects/open-source/diesel_demo)
+     Running `target/debug/delete_post demo`
+Deleted 1 posts
+</code></pre>
+<p>When we try to run <code>cargo run --bin show_post</code>s again, we can see that the post was in fact deleted.
+This barely scratches the surface of what you can do with Diesel, but hopefully this tutorial
+has given you a good foundation to build off of. We recommend exploring the <a href="guides/../docs/index.html">API docs</a> to see more.
+The final code for this tutorial can be found <a href="https://github.com/diesel-rs/diesel/tree/v1.4.4/examples/postgres/getting_started_step_3/">here</a>.</p>
+<h1 id="all-about-updates"><a class="header" href="#all-about-updates">All About Updates</a></h1>
+<p>Most applications fall into a category called &quot;CRUD&quot; apps. CRUD stands for
+&quot;Create, Read, Update, Delete&quot;. Diesel provides support for all four pieces,
+but in this guide we're going to look at all the different ways to go about updating records.</p>
+<p>An update statement is constructed by calling <code>diesel::update(target).set(changes)</code>.
+The resulting statement is then run by calling either <code>execute</code>, <code>get_result</code>, or <code>get_results</code>.</p>
+<p>If you look at the documentation for <a href="https://docs.diesel.rs/diesel/fn.update.html"><code>update</code></a>,
+you'll notice that the type of the argument is any type <code>T</code> which implements <code>IntoUpdateTarget</code>.
+You don't need to worry about what this trait does, but it is important to know
+which types implement it. There are three kinds which implement this trait. The first is tables.</p>
+<p>If we have a table that looks like this:</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_updates/src/lib.rs#L12-L21">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>table! {
+    posts {
+        id -&gt; BigInt,
+        title -&gt; Text,
+        body -&gt; Text,
+        draft -&gt; Bool,
+        publish_at -&gt; Timestamp,
+        visit_count -&gt; Integer,
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>We could write a query that publishes all posts by doing:</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_updates/src/lib.rs#L33-L38">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use posts::dsl::*;
+
+diesel::update(posts).set(draft.eq(false))
+<span class="boring">}
+</span></code></pre></pre>
+<p>We can use the <a href="https://docs.diesel.rs/diesel/fn.debug_query.html"><code>debug_query</code></a> function to inspect the generated SQL.
+The output you see may slightly differ from this guide, depending on which backend you're using.
+If we run <code>println!(&quot;{}&quot;, debug_query::&lt;Pg, _&gt;(&amp;our_query));</code>, we'll see the following:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_updates/src/lib.rs#L40-L48">view on GitHub</a>):</p>
+<pre><code class="language-sql">UPDATE &quot;posts&quot; SET &quot;draft&quot; = $1 -- binds: [false]
+</code></pre>
+<p>This is pretty much one-to-one with the Rust code (the <code>?</code> denotes a bound parameter in SQL,
+which will be substituted with <code>false</code> here). It's quite rare to want to update an entire table,
+though. So let's look at how we can scope that down. The second kind that you can pass to
+<code>update</code> is any query which has only had <code>.filter</code> called on it. We could scope our update to
+only touch posts where <code>publish_at</code> is in the past like so:</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_updates/src/lib.rs#L50-L57">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use posts::dsl::*;
+use diesel::expression::dsl::now;
+
+let target = posts.filter(publish_at.lt(now));
+diesel::update(target).set(draft.eq(false))
+<span class="boring">}
+</span></code></pre></pre>
+<p>That would generate the following SQL:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_updates/src/lib.rs#L59-L71">view on GitHub</a>):</p>
+<pre><code class="language-sql">UPDATE `posts` SET `draft` = ?
+WHERE `posts`.`publish_at` &lt; CURRENT_TIMESTAMP
+</code></pre>
+<p>The most common update queries are just scoped to a single record. So the final kind that
+you can pass to <code>update</code> is anything which implements <a href="https://docs.diesel.rs/diesel/associations/trait.Identifiable.html">the <code>Identifiable</code> trait</a>.
+<code>Identifiable</code> gets implemented by putting <code>#[derive(Identifiable)]</code> on a struct.
+It represents any struct which is one-to-one with a row on a database table.</p>
+<p>If we wanted a struct that mapped to our posts table, it'd look something like this:</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_updates/src/lib.rs#L23-L31">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Identifiable)]
+pub struct Post {
+    pub id: i32,
+    pub title: String,
+    pub body: String,
+    pub draft: bool,
+    pub publish_at: SystemTime,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The struct has one field per database column, but what's important for <code>Identifiable</code> is
+that it has the <code>id</code> field, which is the primary key of our table. Since our struct name is
+just the table name without an <code>s</code>, we don't have to provide the table name explicitly.
+If our struct were named something different, or if pluralizing it was more complex than
+putting an <code>s</code> on the end, we would have to specify the table name by adding <code>#[table_name=&quot;posts&quot;]</code>.
+We're using <code>SystemTime</code> here since it's in the standard library, but in a real application
+we'd probably want to use a more full-featured type like one from <code>chrono</code>,
+which you can do by enabling the <code>chrono</code> feature on Diesel.</p>
+<p>If we wanted to publish just this post, we could do it like this:</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_updates/src/lib.rs#L73-L76">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>diesel::update(&amp;post).set(posts::draft.eq(false))
+<span class="boring">}
+</span></code></pre></pre>
+<p>It's important to note that we always pass a reference to the post, not the post itself.
+When we write <code>update(post)</code>, that's equivalent to writing <code>update(posts.find(post.id))</code>,
+or <code>update(posts.filter(id.eq(post.id)))</code>. We can see this in the generated SQL:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_updates/src/lib.rs#L78-L93">view on GitHub</a>):</p>
+<pre><code class="language-sql">UPDATE `posts` SET `draft` = ? WHERE `posts`.`id` = ?
+</code></pre>
+<p>Now that we've seen all the ways to specify what we want to update,
+let's look at the different ways to provide the data to update it with.
+We've already seen the first way, which is to pass <code>column.eq(value)</code> directly.
+So far we've just been passing Rust values here, but we can actually use any Diesel expression.
+For example, we could increment a column:</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/tree/v1.4.4/examples/postgres/all_about_updates/src/lib.rs#L95-L100">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use posts::dsl::*;
+
+diesel::update(posts).set(visit_count.eq(visit_count + 1))
+<span class="boring">}
+</span></code></pre></pre>
+<p>That would generate this SQL:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_updates/src/lib.rs#L102-L111">view on GitHub</a>):</p>
+<pre><code class="language-sql">UPDATE `posts`
+SET `visit_count` = `posts`.`visit_count` + 1
+</code></pre>
+<p>Assigning values directly is great for small, simple changes.
+If we wanted to update multiple columns this way, we can pass a tuple.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_updates/src/lib.rs#L118-L127">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use posts::dsl::*;
+
+diesel::update(posts)
+  .set((
+      title.eq(&quot;[REDACTED]&quot;),
+      body.eq(&quot;This post has been classified&quot;),
+  ))
+<span class="boring">}
+</span></code></pre></pre>
+<p>This will generate exactly the SQL you'd expect:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_updates/src/lib.rs#L129-L142">view on GitHub</a>):</p>
+<pre><code class="language-sql">UPDATE `posts` SET `title` = ?, `body` = ?
+</code></pre>
+<h2 id="aschangeset"><a class="header" href="#aschangeset">AsChangeset</a></h2>
+<p>While it's nice to have the ability to update columns directly like this,
+it can quickly get cumbersome when dealing with forms that have more than a handful of fields.
+If we look at the signature of <a href="https://docs.diesel.rs/diesel/query_builder/struct.IncompleteUpdateStatement.html#method.set"><code>.set</code></a>, you'll notice that the constraint is for a trait called
+<a href="https://docs.diesel.rs/diesel/query_builder/trait.AsChangeset.html"><code>AsChangeset</code></a>. This is another trait that <code>diesel</code> can derive for us. We can add
+<code>#[derive(AsChangeset)]</code> to our <code>Post</code> struct, which will let us pass a <code>&amp;Post</code> to <code>set</code>.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_updates/src/lib.rs#L144-L146">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>diesel::update(posts::table).set(&amp;post)
+<span class="boring">}
+</span></code></pre></pre>
+<p>The SQL will set every field present on the <code>Post</code> struct except for the primary key.</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_updates/src/lib.rs#L148-L179">view on GitHub</a>):</p>
+<pre><code class="language-sql">UPDATE `posts` SET
+    `title` = ?,
+    `body` = ?,
+    `draft` = ?,
+    `publish_at` = ?,
+    `visit_count` = ?
+</code></pre>
+<p>Changing the primary key of an existing row is almost never something that you want to do,
+so <code>#[derive(AsChangeset)]</code> assumes that you want to ignore it. The only way to change
+the primary key is to explicitly do it with <code>.set(id.eq(new_id))</code>. However,
+note that <code>#[derive(AsChangeset)]</code> doesn't have the information from your table definition.
+If the primary key is something other than <code>id</code>, you'll need to put
+<code>#[primary_key(your_primary_key)]</code> on the struct as well.</p>
+<p>If the struct has any optional fields on it, these will also have special behavior.
+By default, <code>#[derive(AsChangeset)]</code> will assume that <code>None</code> means that you don't wish
+to assign that field. For example, if we had the following code:</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_updates/src/lib.rs#L181-L195">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(AsChangeset)]
+#[table_name=&quot;posts&quot;]
+struct PostForm&lt;'a&gt; {
+    title: Option&lt;&amp;'a str&gt;,
+    body: Option&lt;&amp;'a str&gt;,
+}
+
+diesel::update(posts::table)
+    .set(&amp;PostForm {
+        title: None,
+        body: Some(&quot;My new post&quot;),
+    })
+<span class="boring">}
+</span></code></pre></pre>
+<p>That would generate the following SQL:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_updates/src/lib.rs#L197-L216">view on GitHub</a>):</p>
+<pre><code class="language-sql">UPDATE `posts` SET `body` = ?
+</code></pre>
+<p>If you wanted to assign <code>NULL</code> instead, you can either specify <code>#[changeset_options(treat_none_as_null=&quot;true&quot;)]</code> on the struct, or you can have the field be of type <code>Option&lt;Option&lt;T&gt;&gt;</code>. Diesel doesn't currently provide a way to explicitly assign a field to its default value, though it may be provided in the future.</p>
+<p>If you are using PostgreSQL, all of these options will work with <code>INSERT ON CONFLICT DO UPDATE</code>
+as well. See the <a href="https://docs.diesel.rs/diesel/pg/upsert/index.html">upsert docs</a> for more details.</p>
+<h2 id="executing-your-query"><a class="header" href="#executing-your-query">Executing your query</a></h2>
+<p>Once you've constructed your query, we need to actually execute it.
+There are several different methods to do this, depending on what type you'd like back.</p>
+<p>The simplest method for running your query is <a href="https://docs.diesel.rs/diesel/query_dsl/trait.RunQueryDsl.html#tymethod.execute"><code>execute</code></a>. This method will run your query,
+and return the number of rows that were affected. This is the method you should use
+if you simply want to ensure that the query executed successfully,
+and don't care about getting anything back from the database.</p>
+<p>For queries where you do want to get data back from the database,
+we need to use <a href="https://docs.diesel.rs/diesel/query_dsl/trait.RunQueryDsl.html#method.get_result"><code>get_result</code></a> or <a href="https://docs.diesel.rs/diesel/query_dsl/trait.RunQueryDsl.html#method.get_results"><code>get_results</code></a>. If you haven't explicitly called <a href="https://docs.diesel.rs/diesel/query_builder/update_statement/struct.UpdateStatement.html#method.returning"><code>returning</code></a>,
+these methods will return all of the columns on the table. Similar to <a href="https://docs.diesel.rs/diesel/query_dsl/trait.RunQueryDsl.html#method.load"><code>load</code></a> on a select statement,
+you will need to specify the type you'd like to deserialize to (either a tuple or a struct with
+<code>#[derive(Queryable)]</code>). You should use <a href="https://docs.diesel.rs/diesel/query_dsl/trait.RunQueryDsl.html#method.get_results"><code>get_results</code></a> when you are expecting more than one record back.
+If you are only expecting a single record, you can call <a href="https://docs.diesel.rs/diesel/query_dsl/trait.RunQueryDsl.html#method.get_result"><code>get_result</code></a> instead.</p>
+<p>It should be noted that receiving 0 rows from <a href="https://docs.diesel.rs/diesel/query_dsl/trait.RunQueryDsl.html#method.get_result"><code>get_result</code></a> is considered an error condition by default.
+If you want to get back 0 or 1 row (e.g. have a return type of <code>QueryResult&lt;Option&lt;T&gt;&gt;</code>),
+then you will need to call <code>.get_result(...).optional()</code>.</p>
+<p>Finally, if your struct has both <code>#[derive(AsChangeset)]</code> and <code>#[derive(Identifiable)]</code>,
+you will be able to use the <a href="https://docs.diesel.rs/diesel/query_dsl/trait.SaveChangesDsl.html#method.save_changes"><code>save_changes</code></a> method. Unlike the other methods mentioned in this guide,
+you do not explicitly build a query when using <a href="https://docs.diesel.rs/diesel/query_dsl/trait.SaveChangesDsl.html#method.save_changes"><code>save_changes</code></a>.
+Doing <code>foo.save_changes(&amp;conn)</code> is equivalent to doing <code>diesel::update(&amp;foo).set(&amp;foo).get_result(&amp;conn)</code>.
+Like <a href="https://docs.diesel.rs/diesel/query_dsl/trait.RunQueryDsl.html#method.get_result"><code>get_result</code></a> and <a href="https://docs.diesel.rs/diesel/query_dsl/trait.RunQueryDsl.html#method.get_results"><code>get_results</code></a>, you will need to specify the type you'd like to get back.</p>
+<p>All of the code for this guide can be found in executable form in <a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_updates/src/lib.rs">this Diesel example</a>.</p>
+<h1 id="all-about-inserts"><a class="header" href="#all-about-inserts">All About Inserts</a></h1>
+<p>Most applications fall into a category called &quot;CRUD&quot; apps.
+CRUD stands for &quot;Create, Read, Update, Delete&quot;.
+Diesel provides support for all four pieces,
+but in this guide we're going to look at
+the different ways to go about creating <code>INSERT</code> statements.</p>
+<p>The examples for this guide are going to be shown for PostgreSQL,
+but you can follow along with any backend.
+The full code examples for all backends are linked at the bottom of this guide.</p>
+<p>An insert statement always starts with <a href="https://docs.diesel.rs/diesel/fn.insert_into.html"><code>insert_into</code></a>.
+The first argument to this function is the table you're inserting into.</p>
+<p>For this guide, our schema will look like this:</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L16-L26">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>table! {
+    users {
+        id -&gt; Integer,
+        name -&gt; Text,
+        hair_color -&gt; Nullable&lt;Text&gt;,
+        created_at -&gt; Timestamp,
+        updated_at -&gt; Timestamp,
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Since our functions are going to only operate on the <code>users</code> table,
+we can put <code>use schema::users::dsl::*;</code> at the top of our function,
+which will let us write <code>insert_into(users)</code> instead of
+<code>insert_into(users::table)</code>.
+If you're importing <code>table::dsl::*</code>,
+make sure it's always inside a function, not the top of your module.</p>
+<p>If all of the columns on a table have a default,
+the simplest thing we can do is call <a href="https://docs.diesel.rs/diesel/query_builder/insert_statement/struct.IncompleteInsertStatement.html#method.default_values"><code>.default_values</code></a>.
+We could write a function that ran that query like this:</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L47-L49">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use schema::users::dsl::*;
+
+insert_into(users).default_values().execute(conn)
+<span class="boring">}
+</span></code></pre></pre>
+<p>It's worth noting that this code will still compile,
+even if you don't have default values on all of your columns.
+Diesel will ensure that the value you're assigning has the right type,
+but it can't validate whether the column has a default,
+any constraints that could fail,
+or any triggers that could fire.</p>
+<p>We can use <a href="https://docs.diesel.rs/diesel/fn.debug_query.html"><code>debug_query</code></a> to inspect the generated SQL.
+The exact SQL that is generated may differ depending on the backend you're using.
+If we run <code>println!(&quot;{}&quot;, debug_query::&lt;Pg, _&gt;(&amp;our_query));</code>,
+we'll see the following:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L57">view on GitHub</a>):</p>
+<pre><code class="language-sql">INSERT INTO &quot;users&quot; DEFAULT VALUES -- binds: []
+</code></pre>
+<p>If we want to actually provide values, we can call <a href="https://docs.diesel.rs/diesel/query_builder/insert_statement/struct.IncompleteInsertStatement.html#method.values"><code>.values</code></a> instead.
+There are a lot of different arguments we can provide here.
+The simplest is a single column/value pair using <a href="https://docs.diesel.rs/diesel/expression_methods/trait.ExpressionMethods.html#method.eq"><code>.eq</code></a>.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L62-L64">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use schema::users::dsl::*;
+
+insert_into(users).values(name.eq(&quot;Sean&quot;)).execute(conn)
+<span class="boring">}
+</span></code></pre></pre>
+<p>This will generate the following SQL:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L72-L73">view on GitHub</a>):</p>
+<pre><code class="language-sql">INSERT INTO &quot;users&quot; (&quot;name&quot;) VALUES ($1)
+-- binds [&quot;Sean&quot;]
+</code></pre>
+<p>If we want to provide values for more than one column, we can pass a tuple.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L80-L82">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>insert_into(users)
+    .values((name.eq(&quot;Tess&quot;), hair_color.eq(&quot;Brown&quot;)))
+    .execute(conn)
+<span class="boring">}
+</span></code></pre></pre>
+<p>This will generate the following SQL:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L90-L91">view on GitHub</a>):</p>
+<pre><code class="language-sql">INSERT INTO &quot;users&quot; (&quot;name&quot;, &quot;hair_color&quot;)
+VALUES ($1, $2) -- binds: [&quot;Tess&quot;, &quot;Brown&quot;]
+</code></pre>
+<h2 id="insertable"><a class="header" href="#insertable">Insertable</a></h2>
+<p>Working with tuples is the typical way to do an insert
+if you just have some values that you want to stick in the database.
+But what if your data is coming from another source,
+like a web form deserialized by Serde?
+It'd be annoying to have to write
+<code>(name.eq(user.name), hair_color.eq(user.hair_color))</code>.</p>
+<p>Diesel provides the <a href="https://docs.diesel.rs/diesel/prelude/trait.Insertable.html"><code>Insertable</code></a> trait for this case.
+<code>Insertable</code> maps your struct to columns in the database.
+We can derive this automatically by adding <code>#[derive(Insertable)]</code> to our type.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L30-L35">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use schema::users;
+
+#[derive(Deserialize, Insertable)]
+#[table_name = &quot;users&quot;]
+pub struct UserForm&lt;'a&gt; {
+    name: &amp;'a str,
+    hair_color: Option&lt;&amp;'a str&gt;,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L98-L103">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use schema::users::dsl::*;
+
+let json = r#&quot;{ &quot;name&quot;: &quot;Sean&quot;, &quot;hair_color&quot;: &quot;Black&quot; }&quot;#;
+let user_form = serde_json::from_str::&lt;UserForm&gt;(json)?;
+
+insert_into(users).values(&amp;user_form).execute(conn)?;
+
+Ok(())
+<span class="boring">}
+</span></code></pre></pre>
+<p>This will generate the same SQL as if we had used a tuple.</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L113-L114">view on GitHub</a>):</p>
+<pre><code class="language-sql">INSERT INTO &quot;users&quot; (&quot;name&quot;, &quot;hair_color&quot;)
+VALUES ($1, $2) -- binds: [&quot;Sean&quot;, &quot;Black&quot;]
+</code></pre>
+<p>If one of the fields is <code>None</code>, the default value will be inserted for that field.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L119-L126">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use schema::users::dsl::*;
+
+let json = r#&quot;{ &quot;name&quot;: &quot;Ruby&quot;, &quot;hair_color&quot;: null }&quot;#;
+let user_form = serde_json::from_str::&lt;UserForm&gt;(json)?;
+
+insert_into(users).values(&amp;user_form).execute(conn)?;
+
+Ok(())
+<span class="boring">}
+</span></code></pre></pre>
+<p>That will generate the following SQL:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L136-L137">view on GitHub</a>):</p>
+<pre><code class="language-sql">INSERT INTO &quot;users&quot; (&quot;name&quot;, &quot;hair_color&quot;)
+VALUES ($1, DEFAULT) -- binds: [&quot;Ruby&quot;]
+</code></pre>
+<h2 id="batch-insert"><a class="header" href="#batch-insert">Batch Insert</a></h2>
+<p>If we want to insert more than one row at a time,
+we can do that by passing a <code>&amp;Vec</code> or slice of any of the forms used above.
+Keep in mind that you're always passing a reference here.
+As of Diesel 1.0, Rust will generate a very opaque error message about
+overflow if you try to pass <code>Vec</code> instead of <code>&amp;Vec</code>.</p>
+<p>On backends that support the <code>DEFAULT</code> keyword (all backends except SQLite),
+the data will be inserted in a single query.
+On SQLite, one query will be performed per row.</p>
+<p>For example, if we wanted to insert two rows with a single value,
+we can just use a <code>Vec</code>.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L142-L146">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use schema::users::dsl::*;
+
+insert_into(users)
+    .values(&amp;vec![name.eq(&quot;Sean&quot;), name.eq(&quot;Tess&quot;)])
+    .execute(conn)
+<span class="boring">}
+</span></code></pre></pre>
+<p>Which generates the following SQL:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L155-L156">view on GitHub</a>):</p>
+<pre><code class="language-sql">INSERT INTO &quot;users&quot; (&quot;name&quot;) VALUES ($1), ($2)
+-- binds [&quot;Sean&quot;, &quot;Tess&quot;]
+</code></pre>
+<p>Note that on SQLite, you won't be able to use <code>debug_query</code> for this,
+since it doesn't map to a single query. You can inspect each row like this:</p>
+<p>src/lib.rs:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>for row in &amp;values {
+    let query = insert_into(users).values(row);
+    println!(&quot;{}&quot;, debug_query::&lt;Sqlite, _&gt;(&amp;query));
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>If we wanted to use <code>DEFAULT</code> for some of our rows, we can use an option here.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L161-L165">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use schema::users::dsl::*;
+
+insert_into(users)
+    .values(&amp;vec![Some(name.eq(&quot;Sean&quot;)), None])
+    .execute(conn)
+<span class="boring">}
+</span></code></pre></pre>
+<p>Note that the type here is <code>Option&lt;Eq&lt;Column, Value&gt;&gt;</code> not <code>Eq&lt;Column, Option&lt;Value&gt;&gt;</code>.
+Doing <code>column.eq(None)</code> would insert <code>NULL</code> not <code>DEFAULT</code>.
+This generates the following SQL:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L174-L175">view on GitHub</a>):</p>
+<pre><code class="language-sql">INSERT INTO &quot;users&quot; (&quot;name&quot;) VALUES ($1), (DEFAULT)
+-- binds [&quot;Sean&quot;]
+</code></pre>
+<p>We can do the same thing with tuples.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L180-L187">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use schema::users::dsl::*;
+
+insert_into(users)
+    .values(&amp;vec![
+        (name.eq(&quot;Sean&quot;), hair_color.eq(&quot;Black&quot;)),
+        (name.eq(&quot;Tess&quot;), hair_color.eq(&quot;Brown&quot;)),
+    ])
+    .execute(conn)
+<span class="boring">}
+</span></code></pre></pre>
+<p>Which generates the following SQL:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L199-L201">view on GitHub</a>):</p>
+<pre><code class="language-sql">INSERT INTO &quot;users&quot; (&quot;name&quot;, &quot;hair_color&quot;)
+VALUES ($1, $2), ($3, $4)
+-- binds: [&quot;Sean&quot;, &quot;Black&quot;, &quot;Tess&quot;, &quot;Brown&quot;]
+</code></pre>
+<p>Once again, we can use an <code>Option</code> for any of the fields to insert <code>DEFAULT</code>.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L206-L213">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use schema::users::dsl::*;
+
+insert_into(users)
+    .values(&amp;vec![
+        (name.eq(&quot;Sean&quot;), Some(hair_color.eq(&quot;Black&quot;))),
+        (name.eq(&quot;Ruby&quot;), None),
+    ])
+    .execute(conn)
+<span class="boring">}
+</span></code></pre></pre>
+<p>Which generates the following SQL:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L225-L227">view on GitHub</a>):</p>
+<pre><code class="language-sql">INSERT INTO &quot;users&quot; (&quot;name&quot;, &quot;hair_color&quot;)
+VALUES ($1, $2), ($3, DEFAULT)
+-- binds: [&quot;Sean&quot;, &quot;Black&quot;, &quot;Ruby&quot;]
+</code></pre>
+<p>Finally, <code>Insertable</code> structs can be used for batch insert as well.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L232-L242">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use schema::users::dsl::*;
+
+let json = r#&quot;[
+    { &quot;name&quot;: &quot;Sean&quot;, &quot;hair_color&quot;: &quot;Black&quot; },
+    { &quot;name&quot;: &quot;Tess&quot;, &quot;hair_color&quot;: &quot;Brown&quot; }
+]&quot;#;
+let user_form = serde_json::from_str::&lt;Vec&lt;UserForm&gt;&gt;(json)?;
+
+insert_into(users).values(&amp;user_form).execute(conn)?;
+
+Ok(())
+<span class="boring">}
+</span></code></pre></pre>
+<p>This generates the same SQL as if we had used a tuple:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L225-L227">view on GitHub</a>):</p>
+<pre><code class="language-sql">INSERT INTO &quot;users&quot; (&quot;name&quot;, &quot;hair_color&quot;)
+VALUES ($1, $2), ($3, $4)
+-- binds: [&quot;Sean&quot;, &quot;Black&quot;, &quot;Tess&quot;, &quot;Brown&quot;]
+</code></pre>
+<h2 id="the-returning-clause"><a class="header" href="#the-returning-clause">The <code>RETURNING</code> Clause</a></h2>
+<p>On backends that support the <code>RETURNING</code> clause (such as PostgreSQL),
+we can get data back from our insert as well.
+MySQL and SQLite do not support <code>RETURNING</code> clauses.
+To get back all of the inserted rows,
+we can call <a href="https://docs.diesel.rs/diesel/query_dsl/trait.RunQueryDsl.html#method.get_results"><code>.get_results</code></a> instead of <a href="https://docs.diesel.rs/diesel/query_dsl/trait.RunQueryDsl.html#method.execute"><code>.execute</code></a>.</p>
+<p>Given this struct:</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L37-L44">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Queryable, PartialEq, Debug)]
+struct User {
+    id: i32,
+    name: String,
+    hair_color: Option&lt;String&gt;,
+    created_at: SystemTime,
+    updated_at: SystemTime,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>We can use <code>get_results</code> with this test:</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L265-L295">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use diesel::select;
+use schema::users::dsl::*;
+
+let now = select(diesel::dsl::now).get_result::&lt;SystemTime&gt;(&amp;conn)?;
+
+let inserted_users = insert_into(users)
+    .values(&amp;vec![
+        (id.eq(1), name.eq(&quot;Sean&quot;)),
+        (id.eq(2), name.eq(&quot;Tess&quot;)),
+    ])
+    .get_results(&amp;conn)?;
+
+let expected_users = vec![
+    User {
+        id: 1,
+        name: &quot;Sean&quot;.into(),
+        hair_color: None,
+        created_at: now,
+        updated_at: now,
+    },
+    User {
+        id: 2,
+        name: &quot;Tess&quot;.into(),
+        hair_color: None,
+        created_at: now,
+        updated_at: now,
+    },
+];
+assert_eq!(expected_users, inserted_users);
+<span class="boring">}
+</span></code></pre></pre>
+<p>To inspect the SQL generated by <code>.get_results</code> or <code>.get_result</code>,
+we will need to call <code>.as_query</code> before passing it to <code>debug_query</code>.
+The query in the last test generates the following SQL:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L306-L309">view on GitHub</a>):</p>
+<pre><code class="language-sql">INSERT INTO &quot;users&quot; (&quot;id&quot;, &quot;name&quot;)
+VALUES ($1, $2), ($3, $4)
+RETURNING &quot;users&quot;.&quot;id&quot;, &quot;users&quot;.&quot;name&quot;, &quot;users&quot;.&quot;hair_color&quot;,
+          &quot;users&quot;.&quot;created_at&quot;, &quot;users&quot;.&quot;updated_at&quot;
+-- binds: [1, &quot;Sean&quot;, 2, &quot;Tess&quot;]
+</code></pre>
+<p>You'll notice that we've never given an explicit value for <code>created_at</code> and
+<code>updated_at</code> in any of our examples.
+With Diesel, you typically won't set those values in Rust.
+Typically these columns get set with <code>DEFAULT CURRENT_TIMESTAMP</code>,
+and a trigger is used to change <code>updated_at</code> on updates.
+If you're using PostgreSQL, you can use a built-in trigger
+by running <code>SELECT diesel_manage_updated_at('users');</code> in a migration.</p>
+<p>If we expect one row instead of multiple, we can call <code>.get_result</code> instead of
+<code>.get_results</code>.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L317-L335">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use diesel::select;
+use schema::users::dsl::*;
+
+let now = select(diesel::dsl::now).get_result::&lt;SystemTime&gt;(&amp;conn)?;
+
+let inserted_user = insert_into(users)
+    .values((id.eq(3), name.eq(&quot;Ruby&quot;)))
+    .get_result(&amp;conn)?;
+
+let expected_user = User {
+    id: 3,
+    name: &quot;Ruby&quot;.into(),
+    hair_color: None,
+    created_at: now,
+    updated_at: now,
+};
+assert_eq!(expected_user, inserted_user);
+<span class="boring">}
+</span></code></pre></pre>
+<p>This generates the same SQL as <code>get_results</code>:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L347-L350">view on GitHub</a>):</p>
+<pre><code class="language-sql">INSERT INTO &quot;users&quot; (&quot;id&quot;, &quot;name&quot;) VALUES ($1, $2)
+RETURNING &quot;users&quot;.&quot;id&quot;, &quot;users&quot;.&quot;name&quot;, &quot;users&quot;.&quot;hair_color&quot;,
+          &quot;users&quot;.&quot;created_at&quot;, &quot;users&quot;.&quot;updated_at&quot;
+-- binds: [3, &quot;Ruby&quot;]
+</code></pre>
+<p>Finally, if we only want a single column back, we can call <code>.returning()</code> explicitly.
+This code would return the inserted ID:</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L355-L360">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use schema::users::dsl::*;
+
+insert_into(users)
+    .values(name.eq(&quot;Ruby&quot;))
+    .returning(id)
+    .get_result(conn)
+<span class="boring">}
+</span></code></pre></pre>
+<p>Which generates the following SQL:</p>
+<p>Generated SQL (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/all_about_inserts/src/lib.rs#L368-L370">view on GitHub</a>):</p>
+<pre><code class="language-sql">INSERT INTO &quot;users&quot; (&quot;name&quot;) VALUES ($1)
+RETURNING &quot;users&quot;.&quot;id&quot;
+-- binds: [&quot;Ruby&quot;]
+</code></pre>
+<h2 id="upsert"><a class="header" href="#upsert">&quot;Upsert&quot;</a></h2>
+<p>Every type of insert statement covered in this guide can also be used for
+&quot;insert or update&quot; queries, also known as &quot;upsert&quot;.
+The specifics of upsert are covered extensively in the API documentation.</p>
+<p>For PostgreSQL, see the <a href="https://docs.diesel.rs/diesel/pg/upsert/index.html"><code>pg::upsert</code></a> module.
+For MySQL and SQLite, upsert is done via <code>REPLACE</code>.
+See <a href="https://docs.diesel.rs/diesel/fn.replace_into.html"><code>replace_into</code></a> for details.</p>
+<p>Diesel does not have support for MySQL's <code>ON DUPLICATE KEY</code> conflict,
+as its results are non-deterministic, and unsafe with replication.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>While there are a lot of examples in this guide,
+ultimately the only difference between various kinds of insert statements
+is the argument passed to <code>.values</code>.</p>
+<p>All examples in this guide are run as part of Diesel's test suite.
+You can find the full code examples for each backend at these links:</p>
+<ul>
+<li><a href="https://github.com/diesel-rs/diesel/tree/v1.4.4/examples/postgres/all_about_inserts">PostgreSQL</a></li>
+<li><a href="https://github.com/diesel-rs/diesel/tree/v1.4.4/examples/mysql/all_about_inserts">MySQL</a></li>
+<li><a href="https://github.com/diesel-rs/diesel/tree/v1.4.4/examples/sqlite/all_about_inserts">SQLite</a></li>
+</ul>
+<h1 id="composing-applications-with-diesel"><a class="header" href="#composing-applications-with-diesel">Composing Applications with Diesel</a></h1>
+<p>One of the main benefits of using a query builder over raw SQL
+is that you can pull bits of your query out into functions and reuse them.
+In this guide,
+we'll look at common patterns for extracting your code into re-usable pieces.
+We'll also look at best practices for how to structure your code.</p>
+<p>All of our code examples are based on code from crates.io,
+a real world application which uses Diesel extensively.
+All of our examples will be focused on functions which <em>return</em>
+queries or pieces of queries.
+None of these examples will include a function which takes a database
+connection.
+We will go into the benefits of this structure at the end of the guide.</p>
+<p>crates.io has a <code>canon_crate_name</code> SQL function
+which is always used when comparing crate names.
+Rather than continuously writing
+<code>canon_crate_name(crates::name).eq(&quot;some name&quot;)</code>,
+we can instead pull this out into a function.</p>
+<p>src/krate/mod.rs (<a href="https://github.com/rust-lang/crates.io/blob/b4d49ac32c5561a7a4a0948ce5ba9ada7b8924fb/src/krate/mod.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use diesel::dsl::Eq;
+use diesel::types::Text;
+
+sql_function!(canon_crate_name, CanonCrateName, (x: Text) -&gt; Text);
+
+type WithName&lt;'a&gt; = Eq&lt;canon_crate_name&lt;crates::name&gt;, canon_crate_name&lt;&amp;'a str&gt;&gt;;
+
+fn with_name(name: &amp;str) -&gt; WithName {
+    canon_crate_name(crates::name).eq(canon_crate_name(name))
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Now when we want to find a crate by name, we can write
+<code>crates::table.filter(with_name(&quot;foo&quot;))</code> instead.
+If we want to accept types other than a string,
+we can make the method generic.</p>
+<p>src/krate/mod.rs (<a href="https://github.com/rust-lang/crates.io/blob/b4d49ac32c5561a7a4a0948ce5ba9ada7b8924fb/src/krate/mod.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use diesel::dsl::Eq;
+use diesel::types::Text;
+
+sql_function!(canon_crate_name, CanonCrateName, (x: Text) -&gt; Text);
+
+type WithName&lt;T&gt; = Eq&lt;canon_crate_name&lt;crates::name&gt;, canon_crate_name&lt;T&gt;&gt;;
+
+fn with_name&lt;T&gt;(name: T) -&gt; WithName&lt;T&gt;
+where
+    T: AsExpression&lt;Text&gt;,
+{
+    canon_crate_name(crates::name).eq(canon_crate_name(name))
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>It's up to you whether you make your functions generic,
+or only take a single type.
+We recommend only making these functions generic if it's actually needed,
+since it requires additional bounds in your <code>where</code> clause.
+The bounds you need might not be clear,
+unless you are familiar with Diesel's lower levels.</p>
+<p>In these examples,
+we are using helper types from <code>diesel::dsl</code>
+to write the return type explicitly.
+Nearly every method in Diesel has a helper type like this.
+The first type parameter is the method receiver
+(the thing before the <code>.</code>).
+The remaining type parameters are the arguments to the method.
+If we want to avoid writing this return type,
+or dynamically return a different expression,
+we can box the value instead.</p>
+<p>src/krate/mod.rs (<a href="https://github.com/rust-lang/crates.io/blob/b4d49ac32c5561a7a4a0948ce5ba9ada7b8924fb/src/krate/mod.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use diesel::pg::Pg;
+use diesel::types::Text;
+
+sql_function!(canon_crate_name, CanonCrateName, (x: Text) -&gt; Text);
+
+fn with_name&lt;'a, T&gt;(name: T) -&gt; Box&lt;BoxableExpression&lt;crates::table, Pg, SqlType = Bool&gt; + 'a&gt;
+where
+    T: AsExpression&lt;Text&gt;,
+    T::Expression: BoxableExpression&lt;crates::table, Pg&gt;,
+{
+    canon_crate_name(crates::name).eq(canon_crate_name(name))
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>In order to box an expression, Diesel needs to know three things:</p>
+<ul>
+<li>The table you intend to use it on</li>
+<li>The backend you plan to execute it against</li>
+<li>The SQL type it represents</li>
+</ul>
+<p>This is all the information Diesel uses to type check your query.
+Normally we can get this information from the type,
+but since we've erased the type by boxing,
+we have to supply it.</p>
+<p>The table is used to make sure that you don't try to use <code>users::name</code>
+on a query against <code>posts::table</code>.
+We need to know the backend you will execute it on,
+so we don't accidentally use a PostgreSQL function on SQLite.
+The SQL type is needed so we know what functions this can be passed to.</p>
+<p>Boxing an expression also implies that it has no aggregate functions.
+You cannot box an aggregate expression in Diesel.
+As of Diesel 1.0, a boxed expression can only be used with <em>exactly</em> the from
+clause given.
+You cannot use a boxed expression for <code>crates::table</code> with an inner join to
+another table.</p>
+<p>In addition to extracting expressions,
+you can also pull out entire queries into functions.
+Going back to crates.io,
+the <code>Crate</code> struct doesn't use every column from the <code>crates</code> table.
+Because we almost always select a subset of these columns,
+we have an <code>all</code> function which selects the columns we need.</p>
+<p>src/krate/mod.rs (<a href="https://github.com/rust-lang/crates.io/blob/b4d49ac32c5561a7a4a0948ce5ba9ada7b8924fb/src/krate/mod.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use diesel::dsl::Select;
+
+type AllColumns = (
+    crates::id,
+    crates::name,
+    crates::updated_at,
+    crates::created_at,
+);
+
+const ALL_COLUMNS: AllColumns = (
+    crates::id,
+    crates::name,
+    crates::updated_at,
+    crates::created_at,
+);
+
+type All = Select&lt;crates::table, AllColumns&gt;;
+
+impl Crate {
+    pub fn all() -&gt; All {
+        crates::table.select(ALL_COLUMNS)
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>We also frequently found ourselves writing
+<code>Crate::all().filter(with_name(crate_name))</code>.
+We can pull that into a function as well.</p>
+<p>src/krate/mod.rs (<a href="https://github.com/rust-lang/crates.io/blob/b4d49ac32c5561a7a4a0948ce5ba9ada7b8924fb/src/krate/mod.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use diesel::dsl::Filter;
+
+type ByName&lt;T&gt; = Filter&lt;All, WithName&lt;T&gt;&gt;;
+
+impl Crate {
+    fn by_name&lt;T&gt;(name: T) -&gt; ByName&lt;T&gt; {
+        Self::all().filter(with_name(name))
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>And just like with expressions, if we don't want to write the return types,
+or we want to dynamically construct the query differently, we can box the whole query.</p>
+<p>src/krate/mod.rs (<a href="https://github.com/rust-lang/crates.io/blob/b4d49ac32c5561a7a4a0948ce5ba9ada7b8924fb/src/krate/mod.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use diesel::expression::{Expression, AsExpression};
+use diesel::pg::Pg;
+use diesel::types::Text;
+
+type SqlType = &lt;AllColumns as Expression&gt;::SqlType;
+type BoxedQuery&lt;'a&gt; = crates::BoxedQuery&lt;'a, Pg, SqlType&gt;;
+
+impl Crate {
+    fn all() -&gt; BoxedQuery&lt;'static&gt; {
+        crates::table().select(ALL_COLUMNS).into_boxed()
+    }
+
+    fn by_name&lt;'a, T&gt;(name: T) -&gt; BoxedQuery&lt;'a&gt;
+    where
+        T: AsExpression&lt;Text&gt;,
+        T::Expression: BoxableExpression&lt;crates::table, Pg&gt;,
+    {
+        Self::all().filter(by_name(name))
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Once again, we have to give Diesel some information to box the query:</p>
+<ul>
+<li>The SQL type of the <code>SELECT</code> clause</li>
+<li>The <code>FROM</code> clause</li>
+<li>The backend you are going to execute it against</li>
+</ul>
+<p>The SQL type is needed so we can determine what structs can be
+deserialized from this query.
+The <code>FROM</code> clause is needed so we can validate the arguments
+to future calls to <code>filter</code> and other query builder methods.
+The backend is needed to ensure you don't accidentally use a
+PostgreSQL function on SQLite.</p>
+<p>Note that in all of our examples,
+we are writing functions which <em>return</em> queries or expressions.
+None of these functions execute the query.
+In general you should always prefer functions which return queries,
+and avoid functions which take a connection as an argument.
+This allows you to re-use and compose your queries.</p>
+<p>For example, if we had written our <code>by_name</code> function like this:</p>
+<p>src/krate/mod.rs (<a href="https://github.com/rust-lang/crates.io/blob/b4d49ac32c5561a7a4a0948ce5ba9ada7b8924fb/src/krate/mod.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Crate {
+    fn by_name(name: &amp;str, conn: &amp;PgConnection) -&gt; QueryResult&lt;Self&gt; {
+        Self::all()
+            .filter(with_name(name))
+            .first(conn)
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Then we would never be able to use this query in another context,
+or modify it further. By writing the function as one that returns a query,
+rather than executing it, we can do things like use it as a subselect.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let version_id = versions
+    .select(id)
+    .filter(crate_id.eq_any(Crate::by_name(crate_name).select(crates::id)))
+    .filter(num.eq(version))
+    .first(&amp;*conn)?;
+<span class="boring">}
+</span></code></pre></pre>
+<p>Or use it to do things like get all of its downloads:
+Example</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let recent_downloads = Crate::by_name(crate_name)
+    .inner_join(crate_downloads::table)
+    .filter(CrateDownload::is_recent())
+    .select(sum(crate_downloads::downloads))
+    .get_result(&amp;*conn)?;
+<span class="boring">}
+</span></code></pre></pre>
+<p>All code in this guide is based on real code from crates.io.
+You can find the source <a href="https://github.com/rust-lang/crates.io">on GitHub</a></p>
+<h1 id="schema-in-depth"><a class="header" href="#schema-in-depth">Schema in Depth</a></h1>
+<p>In this guide we're going to look at what exactly <code>diesel print-schema</code>
+and <a href="https://docs.diesel.rs/diesel/macro.table.html"><code>table!</code></a> do. For <code>table!</code>, we will show a simplified version of the actual code
+that gets generated, and explain how each piece is relevant to you.
+If you've ever been confused about what exactly is getting generated,
+or what <code>use schema::posts::dsl::*</code> means, this is the right place to be.</p>
+<p><code>diesel print-schema</code> is a command provided by Diesel CLI.
+This command will establish a database connection, query for a list of all the tables
+and their columns, and generate <code>table!</code> invocations for each one.
+<code>diesel print-schema</code> will skip any table names which start with <code>__</code> (a double underscore).
+Diesel can be configured to automatically re-run <code>diesel print-schema</code>
+whenever you run migrations. See <a href="guides/./configuring-diesel-cli.html">Configuring Diesel CLI</a> for details.</p>
+<p><code>table!</code> is where the bulk of the code gets generated. If you wanted to,
+you could see the actual exact code that gets generated
+by running <code>cargo rustc -- -Z unstable-options --pretty=expanded</code>.
+However, the output will be quite noisy, and there's a lot of code
+that won't actually be relevant to you.
+Instead we're going to go step by step through a <em>simplified</em> version of this output,
+which only has the code which you would use directly.</p>
+<p>For this example, we'll look at the code generated by this <code>table!</code> invocation:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>table! {
+    users {
+        id -&gt; Integer,
+        name -&gt; Text,
+        hair_color -&gt; Nullable&lt;Text&gt;,
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>If you just want to see the full simplified code and look through it yourself,
+you will find it at the end of this guide.</p>
+<p>The output of <code>table!</code> is always a Rust module with the same name.
+The first and most important part of this module will be the definition of the table itself:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct table;
+<span class="boring">}
+</span></code></pre></pre>
+<p>This is the struct that represents the user's table for the purpose of constructing SQL queries.
+It's usually referenced in code as <code>users::table</code> (or sometimes just <code>users</code>, more on that in a bit).
+Next, we'll see there's a module called <code>columns</code>, with one struct per column of the table.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct id;
+pub struct name;
+pub struct hair_color;
+<span class="boring">}
+</span></code></pre></pre>
+<p>Each of these structs uniquely represents each column of the table
+for the purpose of constructing SQL queries.
+Each of these structs will implement a trait called <a href="https://docs.diesel.rs/diesel/expression/trait.Expression.html"><code>Expression</code></a>,
+which indicates the SQL type of the column.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Expression for id {
+    type SqlType = Integer;
+}
+
+impl Expression for name {
+    type SqlType = Text;
+}
+
+impl Expression for hair_color {
+    type SqlType = Nullable&lt;Text&gt;;
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The <code>SqlType</code> type is at the core of how Diesel ensures that your queries are correct.
+This type will be used by <a href="https://docs.diesel.rs/diesel/expression_methods/trait.ExpressionMethods.html"><code>ExpressionMethods</code></a> to determine what things can and cannot
+be passed to methods like <code>eq</code>. It will also be used by <a href="https://docs.diesel.rs/diesel/query_source/trait.Queryable.html"><code>Queryable</code></a> to determine
+what types can be deserialized when this column appears in the select clause.</p>
+<p>In the columns module you'll also see a special column called <code>star</code>.
+Its definition looks like this:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct star;
+
+impl Expression for star {
+    type SqlType = ();
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The <code>star</code> struct represents <code>users.*</code> in the query builder.
+This struct is only intended to be used for generating count queries.
+It should never be used directly. Diesel loads your data from a query by index,
+not by name. In order to ensure that we're actually getting the data
+for the column we think we are, Diesel never uses <code>*</code> when we actually want to
+get the data back out of it. We will instead generate an explicit select clause
+such as <code>SELECT users.id, users.name, users.hair_color</code>.</p>
+<p>Everything in the columns module will be re-exported from the parent module.
+This is why we can reference columns as <code>users::id</code>, and not <code>users::columns::id</code>.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub use self::columns::*;
+
+pub struct table;
+
+pub mod columns {
+    /* ... */
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Queries can often get quite verbose when everything has to be prefixed with <code>users::</code>.
+For this reason, Diesel also provides a convenience module called <code>dsl</code>.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod dsl {
+    pub use super::columns::{id, name, hair_color};
+    pub use super::table as users;
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>This module re-exports everything in <code>columns</code> module (except for <code>star</code>),
+and also re-exports the table but renamed to the actual name of the table.
+This means that instead of writing:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>users::table
+    .filter(users::name.eq(&quot;Sean&quot;))
+    .filter(users::hair_color.eq(&quot;black&quot;))
+<span class="boring">}
+</span></code></pre></pre>
+<p>we can instead write:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>users.filter(name.eq(&quot;Sean&quot;)).filter(hair_color.eq(&quot;black&quot;))
+<span class="boring">}
+</span></code></pre></pre>
+<p>The <code>dsl</code> module should only ever be imported for single functions.
+You should never have <code>use schema::users::dsl::*;</code> at the top of a module.
+Code like <code>#[derive(Insertable)]</code> will assume that <code>users</code> points to the module,
+not the table struct.</p>
+<p>Since <code>star</code> is otherwise inaccessible if you have <code>use schema::users::dsl::*;</code>,
+it is also exposed as an instance method on the table.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl table {
+    pub fn star(&amp;self) -&gt; star {
+        star
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Next, there are several traits that get implemented for <code>table</code>.
+You generally will never interact with these directly,
+but they are what enable most of the query builder functions
+found in <a href="https://docs.diesel.rs/diesel/query_dsl/index.html">the <code>query_dsl</code> module</a>,
+as well as use with <code>insert</code>, <code>update</code>, and <code>delete</code>.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl AsQuery for table {
+    /* body omitted */
+}
+
+impl Table for table {
+    /* body omitted */
+}
+
+impl IntoUpdateTarget for table {
+    /* body omitted */
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Finally, there are a few small type definitions
+and constants defined to make your life easier.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub const all_columns: (id, name, hair_color) = (id, name, hair_color);
+
+pub type SqlType = (Integer, Text, Nullable&lt;Text&gt;);
+
+pub type BoxedQuery&lt;'a, DB, ST = SqlType&gt; = BoxedSelectStatement&lt;'a, ST, table, DB&gt;;
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>all_columns</code> is just a tuple of all of the column on the table.
+It is what is used to generate the <code>select</code> statement for a query on this table
+when you don't specify one explicitly. If you ever want to reference <code>users::star</code>
+for things that aren't count queries, you probably want <code>users::all_columns</code> instead.</p>
+<p><code>SqlType</code> will be the SQL type of <code>all_columns</code>.
+It's rare to need to reference this directly,
+but it's less verbose than <code>&lt;&lt;users::table as Table&gt;::AllColumns as Expression&gt;::SqlType</code>
+when you need it.</p>
+<p>Finally, there is a helper type for referencing boxed queries built from this table.
+This means that instead of writing <code>BoxedSelectStatement&lt;'static, users::SqlType, users::table, Pg&gt;</code>
+you can instead write <code>users::BoxedQuery&lt;'static, Pg&gt;</code>.
+You can optionally specify the SQL type as well if the query has a custom select clause.</p>
+<p>And that's everything! Here is the full code that was generated for this table:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod users {
+    pub use self::columns::*;
+
+    pub mod dsl {
+        pub use super::columns::{id, name, hair_color};
+        pub use super::table as users;
+    }
+
+    pub const all_columns: (id, name, hair_color) = (id, name, hair_color);
+
+    pub struct table;
+
+    impl table {
+        pub fn star(&amp;self) -&gt; star {
+            star
+        }
+    }
+
+    pub type SqlType = (Integer, Text, Nullable&lt;Text&gt;);
+
+    pub type BoxedQuery&lt;'a, DB, ST = SqlType&gt; = BoxedSelectStatement&lt;'a, ST, table, DB&gt;;
+
+    impl AsQuery for table {
+        /* body omitted */
+    }
+
+    impl Table for table {
+        /* body omitted */
+    }
+
+    impl IntoUpdateTarget for table {
+        /* body omitted */
+    }
+
+    pub mod columns {
+        pub struct star;
+
+        impl Expression for star {
+            type SqlType = ();
+        }
+
+        pub struct id;
+
+        impl Expression for id {
+            type SqlType = Integer;
+        }
+
+        pub struct name;
+
+        impl Expression for name {
+            type SqlType = Text;
+        }
+
+        pub struct hair_color;
+
+        impl Expression for hair_color {
+            type SqlType = Nullable&lt;Text&gt;;
+        }
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h1 id="extending-diesel"><a class="header" href="#extending-diesel">Extending Diesel</a></h1>
+<p>Diesel provides a lot of capabilities out of the box.
+However, it doesn't necessarily provide everything your app may want to use.
+One of Diesel's greatest strengths
+is that it can be extended to add new functionality.</p>
+<p>In this guide we'll look at several ways to hook into Diesel's query builder,
+both to add new capabilities,
+and to introduce new abstractions.</p>
+<p>This guide is only going to cover extending the query builder.
+How to add support for new SQL types will be covered in a future guide.</p>
+<h2 id="sql_function"><a class="header" href="#sql_function"><code>sql_function!</code></a></h2>
+<p>The easiest and most common way to extend Diesel's query builder
+is by declaring a new SQL function.
+This can be used for functions defined by your database,
+or for built-in functions that Diesel doesn't support out of the box.</p>
+<p>Functions in SQL often have multiple signatures,
+making them difficult or impossible to represent in Rust.
+Because of this, Diesel only provides support for a small number
+of built-in SQL functions.
+Consider <code>COALESCE</code>.
+This function can take any number of arguments,
+and its return type changes based on whether any arguments are <code>NOT NULL</code>.
+While we can't easily represent that in Rust,
+we can use <code>sql_function!</code> to declare it with the exact signature we're using.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use diesel::types::{Nullable, Text};
+sql_function!(coalesce, Coalesce, (x: Nullable&lt;Text&gt;, y: Text) -&gt; Text);
+
+users.select(coalesce(hair_color, &quot;blue&quot;))
+<span class="boring">}
+</span></code></pre></pre>
+<p>As this example shows,
+<code>sql_function!</code> converts its argument like other parts of the query builder.
+This means that the generated function can take both Diesel expressions,
+and Rust values to be sent with the query.</p>
+<p>The macro takes three arguments:</p>
+<ul>
+<li>A function name</li>
+<li>A type name</li>
+<li>A type signature</li>
+</ul>
+<p>The type signature uses the same syntax as a normal Rust function.
+However, the types given are SQL types,
+not concrete Rust types.
+This is what allows us to pass both columns and Rust strings.
+If we defined this function manually, it would look like this:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn coalesce&lt;X, Y&gt;(x: X, y: Y) -&gt; Coalesce&lt;X::Expression, Y::Expression&gt;
+where
+    X: AsExpression&lt;Nullable&lt;Text&gt;&gt;,
+    Y: AsExpression&lt;Text&gt;,
+<span class="boring">}
+</span></code></pre></pre>
+<p>The type name given as the second argument is almost never used.
+Instead, a helper type is generated with the same name as the function.
+This helper type handles Diesel's argument conversion.
+This lets us write <code>coalesce&lt;hair_color, &amp;str&gt;</code>
+instead of <code>Coalesce&lt;hair_color, Bound&lt;Text, &amp;str&gt;&gt;</code>.</p>
+<h2 id="using-custom-sql-and-how-to-extend-the-query-dsl"><a class="header" href="#using-custom-sql-and-how-to-extend-the-query-dsl">Using Custom SQL and How to Extend the Query DSL</a></h2>
+<p>Often times it's useful to encapsulate a common SQL pattern.
+For example, if you're doing pagination on your queries,
+PostgreSQL is capable of loading the total count in a single query.
+The query you would want to execute would look like this:</p>
+<pre><code class="language-sql">SELECT *, COUNT(*) OVER () FROM (subselect t) LIMIT $1 OFFSET $1
+</code></pre>
+<p>However, as of version 1.0,
+Diesel doesn't support window functions, or selecting from a subselect.
+Even if Diesel's query builder supported those things,
+this is a case that is easier to reason about in terms of the SQL we want to
+generate.</p>
+<p>Let's look at how we would go about adding a <code>paginate</code> method to Diesel's query
+builder, to generate that query.
+Let's assume for the time being that we have a struct <code>Paginated&lt;T&gt;</code> already.
+We'll look at the specifics of this struct shortly.</p>
+<p>If you are creating a struct where you want to manually define the SQL,
+you will need to implement a trait called <code>QueryFragment</code>.
+The implementation will look like this:</p>
+<p>src/pagination.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/advanced-blog-cli/src/pagination.rs#L54-L68">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;T&gt; QueryFragment&lt;Pg&gt; for Paginated&lt;T&gt;
+where
+    T: QueryFragment&lt;Pg&gt;,
+{
+    fn walk_ast(&amp;self, mut out: AstPass&lt;Pg&gt;) -&gt; QueryResult&lt;()&gt; {
+        out.push_sql(&quot;SELECT *, COUNT(*) OVER () FROM (&quot;);
+        self.query.walk_ast(out.reborrow())?;
+        out.push_sql(&quot;) LIMIT &quot;);
+        out.push_bind_param::&lt;BigInt, _&gt;(&amp;self.limit())?;
+        out.push_sql(&quot; OFFSET &quot;);
+        out.push_bind_param::&lt;BigInt, _&gt;(&amp;self.offset())?;
+        Ok(())
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>For details on what each method does,
+see the documentation for <a href="https://docs.diesel.rs/diesel/query_builder/struct.AstPass.html"><code>AstPass</code></a>.
+One important question to ask whenever you implement <code>QueryFragment</code>
+is whether you are generating a query that is safe to cache.
+The way to answer this question is by asking
+&quot;does this struct generate an unlimited number of potential SQL queries&quot;?
+Typically that is only the case if the body of <code>walk_ast</code> contains a for loop.
+If your query is not safe to cache, you <em>must</em> call
+<code>out.unsafe_to_cache_prepared</code>.</p>
+<p>Whenever you implement <code>QueryFragment</code>, you also need to implement <a href="https://docs.diesel.rs/diesel/query_builder/trait.QueryId.html"><code>QueryId</code></a>.
+We can use the <a href="https://docs.diesel.rs/diesel/macro.impl_query_id.html"><code>impl_query_id!</code></a> macro for this.
+Since this struct represents a full query which can be executed,
+we will implement <a href="https://docs.diesel.rs/diesel/query_dsl/trait.RunQueryDsl.html"><code>RunQueryDsl</code></a> which adds methods like <a href="https://docs.diesel.rs/diesel/query_dsl/trait.RunQueryDsl.html#method.execute"><code>execute</code></a> and <a href="https://docs.diesel.rs/diesel/query_dsl/trait.RunQueryDsl.html#method.load"><code>load</code></a>.
+Since this query has a return type,
+we'll implement <a href="https://docs.diesel.rs/diesel/query_builder/trait.Query.html"><code>Query</code></a> which states the return type as well.</p>
+<p>src/pagination.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/advanced-blog-cli/src/pagination.rs#L48-L52">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl_query_id!(Paginated&lt;T&gt;);
+
+impl&lt;T: Query&gt; Query for Paginated&lt;T&gt; {
+    type SqlType = (T::SqlType, BigInt);
+}
+
+impl&lt;T&gt; RunQueryDsl&lt;PgConnection&gt; for Paginated&lt;T&gt; {}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Now that we've implemented all of these things,
+let's look at how we would go about constructing this.
+We'll want to add a <code>paginate</code> method to all Diesel queries,
+which specifies which page we're on,
+as well as a <code>per_page</code> method which specifies the number of elements per page.</p>
+<p>In order to add new methods to existing types, we can use a trait.</p>
+<p>src/pagination.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/advanced-blog-cli/src/pagination.rs#L7-L33">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait Paginate: AsQuery + Sized {
+    fn paginate(self, page: i64) -&gt; Paginated&lt;Self::Query&gt; {
+        Paginated {
+            query: self.as_query(),
+            page,
+            per_page: DEFAULT_PER_PAGE,
+         }
+    }
+}
+
+impl&lt;T: AsQuery&gt; Paginate for T {}
+
+const DEFAULT_PER_PAGE: i64 = 10;
+
+pub struct Paginated&lt;T&gt; {
+    query: T,
+    page: i64,
+    per_page: i64,
+}
+
+impl Paginated&lt;T&gt; {
+    pub fn per_page(self, per_page: i64) -&gt; Self {
+        Paginated { per_page, ..self }
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Now we can get the third page of a query with 25 elements per page like this:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>users::table
+    .paginate(3)
+    .per_page(25)
+<span class="boring">}
+</span></code></pre></pre>
+<p>With this code,
+we could load any query into a <code>Vec&lt;(T, i64)&gt;</code>,
+but we can do better.
+When doing pagination,
+you usually want the records and the total number of pages.
+We can write that method.</p>
+<p>src/pagination.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/examples/postgres/advanced-blog-cli/src/pagination.rs#L35-L45">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;T&gt; Paginated&lt;T&gt; {
+    fn load_and_count_pages&lt;U&gt;(self, conn: &amp;PgConnection) -&gt; QueryResult&lt;(Vec&lt;U&gt;, i64)
+    where
+        Self: LoadQuery&lt;PgConnection, (U, i64)&gt;,
+    {
+        let per_page = self.per_page;
+        let results = self.load::&lt;(U, i64)&gt;(conn)?;
+        let total = results.get(0).map(|(_, total) total|).unwrap_or(0);
+        let records = results.into_iter().map(|(record, _)| record).collect();
+        let total_pages = (total as f64 / per_page as f64).ceil() as i64;
+        Ok((records, total_pages))
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>This is one of the rare cases where we want to define a function that takes a
+connection.
+One benefit of defining the function this way
+is that if we wanted to support backends other than PostgreSQL,
+we could have this function execute two queries.</p>
+<p>You can find the full code for this example in <a href="https://github.com/diesel-rs/diesel/tree/v1.4.4/examples/postgres/advanced-blog-cli">the &quot;advanced blog&quot; example</a>.</p>
+<h2 id="custom-operators"><a class="header" href="#custom-operators">Custom Operators</a></h2>
+<p>If you're adding support for a new type to Diesel,
+or working with a type that has incomplete support,
+you may wish to add support for the operators associated with that type.
+The term operator refers to anything that uses one of these syntaxes:</p>
+<ul>
+<li>Infix (e.g. <code>left OP right</code>)</li>
+<li>Prefix (e.g. <code>OP expr</code>)</li>
+<li>Postfix (e.g. <code>expr OP</code>)</li>
+</ul>
+<p>Diesel provides helper macros for defining each of these kinds of operators.
+In fact, Diesel uses these macros to declare nearly all of the operators
+supported by the main crate.
+The macros are
+<a href="https://docs.diesel.rs/diesel/macro.diesel_infix_operator.html"><code>diesel_infix_operator!</code></a>, <a href="https://docs.diesel.rs/diesel/macro.diesel_postfix_operator.html"><code>diesel_postfix_operator!</code></a> and
+<a href="https://docs.diesel.rs/diesel/macro.diesel_prefix_operator.html"><code>diesel_prefix_operator!</code></a>.</p>
+<p>All of these macros have the same signature.
+They take between two and four arguments.</p>
+<p>The first is the name of the struct you want to represent this operator.</p>
+<p>The second is the actual SQL for this operator.</p>
+<p>The third argument is optional, and is the SQL type of the operator.
+If the SQL type is not specified, it will default to <code>Bool</code>.
+You can also pass the &quot;magic&quot; type <code>ReturnBasedOnArgs</code>,
+which will cause the SQL type to be the same as the type of its arguments.
+Diesel uses this to make the string concatenation operator <code>||</code>
+return <code>Nullable&lt;Text&gt;</code> if the arguments are nullable,
+or <code>Text</code> if they are not null.</p>
+<p>The fourth argument (or third if you didn't specify the SQL type)
+is the backend this operator is used for.
+If you don't specify a backend,
+the operator can be used on all backends.</p>
+<p>Let's look at some example usage from Diesel:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// A simple operator. It returns `Bool` and works on all backends.
+diesel_infix_operator!(Eq, &quot; = &quot;);
+
+// Here we've specified the SQL type.
+// Since this operator is only used for ordering, and we don't want it used
+// elsewhere, we've made it `()` which is normally useless.
+diesel_postfix_operator!(Asc, &quot; ASC&quot;, ());
+
+// Concat uses the magic `ReturnBasedOnArgs` return type
+// so it can work with both `Text` and `Nullable&lt;Text&gt;`.
+diesel_infix_operator!(Concat, &quot; || &quot;, ReturnBasedOnArgs);
+
+// This operator is PG specific, so we specify the backend
+diesel_infix_operator!(IsDistinctFrom, &quot; IS DISTINCT FROM &quot;, backend: Pg);
+
+// This operator is PG specific, and we are also specifying the SQL type.
+diesel_postfix_operator!(NullsFirst, &quot; NULLS FIRST&quot;, (), backend: Pg);
+<span class="boring">}
+</span></code></pre></pre>
+<p>Diesel provides a proof-of-concept crate showing how to add new SQL types called
+<code>diesel_full_text_search</code>.
+These are the operators as they are defined in that crate.
+You'll notice all of the operators specify the backend,
+and many of them specify the return type.</p>
+<p>src/lib.rs (<a href="https://github.com/diesel-rs/diesel_full_text_search/blob/27b9946831caa8b08177c1818a50cb7f0563c9c0/src/lib.rs#L57-L62">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>diesel_infix_operator!(Matches, &quot; @@ &quot;, backend: Pg);
+diesel_infix_operator!(Concat, &quot; || &quot;, TsVector, backend: Pg);
+diesel_infix_operator!(And, &quot; &amp;&amp; &quot;, TsQuery, backend: Pg);
+diesel_infix_operator!(Or, &quot; || &quot;, TsQuery, backend: Pg);
+diesel_infix_operator!(Contains, &quot; @&gt; &quot;, backend: Pg);
+diesel_infix_operator!(ContainedBy, &quot; &lt;@ &quot;, backend: Pg);
+<span class="boring">}
+</span></code></pre></pre>
+<p>However, just declaring the operator by itself isn't very useful.
+This creates the types required by Diesel's query builder,
+but doesn't provide anything to help use the operator in real code.
+The structs created by these macros will have a <code>new</code> method,
+but that's not typically how you work with Diesel's query builder.</p>
+<ul>
+<li>Infix operators are usually methods on the left hand side.</li>
+<li>Postfix operators are usually methods on the expression.</li>
+<li>Prefix operators are usually bare functions.</li>
+</ul>
+<p>For operators that you create with methods,
+you would typically create a trait for this.
+For example, here's how the <code>.eq</code> method gets defined by Diesel.</p>
+<p>src/expression_methods/global_expression_methods.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/diesel/src/expression_methods/global_expression_methods.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait ExpressionMethods: Expression + Sized {
+    fn eq&lt;T: AsExpression&lt;Self::SqlType&gt;&gt;(self, other: T) -&gt; Eq&lt;Self, T::Expression&gt; {
+        Eq::new(self, other.as_expression())
+    }
+}
+
+impl&lt;T: Expression&gt; ExpressionMethods for T {}
+<span class="boring">}
+</span></code></pre></pre>
+<p>It's important to note that these methods are where you should put any type
+constraints.
+The structs defined by <code>diesel_*_operator!</code> don't know or care about what the
+types of the arguments should be.
+The <code>=</code> operator requires that both sides be of the same type,
+so we represent that in the type of <code>ExpressionMethods::eq</code>.</p>
+<p>You'll also notice that our argument is
+<code>AsExpression&lt;Self::SqlType&gt;</code>,
+not <code>Expression&lt;SqlType = Self::SqlType&gt;</code>.
+This allows Rust values to be passed as well as Diesel expressions.
+For example, we can do <code>text_col.eq(other_text_col)</code>,
+or <code>text_col.eq(&quot;Some Rust string&quot;)</code>.</p>
+<p>If the operator is specific to only one SQL type,
+we can represent that in our trait.</p>
+<p>src/expression_methods/global_expression_methods.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/diesel/src/expression_methods/bool_expression_methods.rs">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait BoolExpressionMethods
+where
+    Self: Expression&lt;SqlType = Bool&gt; + Sized,
+{
+    fn and&lt;T: AsExpression&lt;Bool&gt;&gt;(self, other: T) -&gt; And&lt;Self, T::Expression&gt; {
+        And::new(self, other.as_expression())
+    }
+}
+
+impl&lt;T: Expression&lt;SqlType = Bool&gt;&gt; BoolExpressionMethods for T {}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Prefix operators are usually defined as bare functions.
+The code is very similar, but without the trait.
+Here's how <code>not</code> is defined in Diesel.</p>
+<p>src/expression/not.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/diesel/src/expression/not.rs#L27-L29">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn not&lt;T: AsExpression&lt;Bool&gt;&gt;(expr: T)
+    -&gt; Not&lt;Grouped&lt;T::Expression&gt;&gt;
+{
+    super::operators::Not::new(Grouped(expr.as_expression()))
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>In this case we're using <code>Grouped</code>
+(which is currently undocumented in Diesel and only used internally)
+to add parenthesis around our argument.
+This ensures that the operator precedence in SQL matches what's expected.
+For example, we would expect <code>not(true.and(false))</code> to return <code>true</code>.
+However, <code>SELECT NOT TRUE AND FALSE</code> returns <code>FALSE</code>.
+Diesel does the same thing with <code>.or</code>.</p>
+<p>It's also a best practice to expose a &quot;helper type&quot; for your method,
+which does the same type conversion as the method itself.
+Nobody wants to write <code>Eq&lt;text_col, &lt;&amp;str as AsExpression&lt;Text&gt;&gt;::Expression&gt;</code>.
+Instead, we provide a type that lets you write <code>Eq&lt;text_col, &amp;str&gt;</code>.</p>
+<p>src/expression/helper_types.rs (<a href="https://github.com/diesel-rs/diesel/blob/v1.4.4/diesel/src/expression/helper_types.rs#L20">view on GitHub</a>):</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub type Eq&lt;Lhs, Rhs&gt; =
+    super::operators::Eq&lt;Lhs, AsExpr&lt;Rhs, Lhs&gt;&gt;;
+<span class="boring">}
+</span></code></pre></pre>
+<p>For defining these types,
+you'll usually want to make use of <a href="https://docs.diesel.rs/diesel/helper_types/type.SqlTypeOf.html"><code>SqlTypeOf</code></a>, <a href="https://docs.diesel.rs/diesel/helper_types/type.AsExpr.html"><code>AsExpr</code></a>, and <a href="https://docs.diesel.rs/diesel/helper_types/type.AsExprOf.html"><code>AsExprOf</code></a>.</p>
+<h1 id="configuring-diesel-cli"><a class="header" href="#configuring-diesel-cli">Configuring Diesel CLI</a></h1>
+<p>Diesel CLI is an optional tool Diesel provides to manage your
+database schema. Its main two roles are to run database
+migrations, and to create a Rust file which represents your
+database schema.</p>
+<p>The behavior of Diesel CLI can be configured through a toml file. By
+default Diesel will look for <code>diesel.toml</code> in the same directory as
+your <code>Cargo.toml</code> file. You can provide a different config file by
+setting the <code>DIESEL_CONFIG_FILE</code> environment variable, or passing
+<code>--config-file</code> on the command line. You can get a basic config file
+with some defaults provided by running <code>diesel setup</code>.</p>
+<p>As of Diesel 1.3, the file contains a single section,
+<code>[print_schema]</code>. All fields in this file are optional.</p>
+<h2 id="the-file-field"><a class="header" href="#the-file-field">The <code>file</code> field</a></h2>
+<p>This field specifies the file where you want the Rust representation
+of your schema to live. When this field is present, commands which
+modify database schema (such as <code>diesel migration run</code>) will
+automatically run <code>diesel print-schema</code>, and output its results to
+this file.</p>
+<p>This means that you can modify your database schema without having to
+worry about running a separate command to update your Rust code. It is
+highly recommended that you use this field, to ensure that the Rust
+representation of your database schema is always in sync with what is
+actually in your database. Typically this is set to <code>src/schema.rs</code>.</p>
+<p>Unlike other fields, this doesn't actually modify the behavior of
+<code>diesel print-schema</code>. <code>diesel print-schema</code> will always output your
+schema to stdout, regardless of whether this field is present or not.</p>
+<h2 id="the-with_docs-field"><a class="header" href="#the-with_docs-field">The <code>with_docs</code> field</a></h2>
+<p>When this field is set to <code>true</code>, <code>diesel print-schema</code> will act as
+though the <code>--with-docs</code> flag was passed by default. This places a doc
+comment on all tables and columns.</p>
+<h2 id="the-filter-field"><a class="header" href="#the-filter-field">The <code>filter</code> field</a></h2>
+<p>This field specifies which tables should be output by <code>diesel print-schema</code>. It corresponds to the <code>--only-tables</code> and
+<code>--except-tables</code> on the command line. Its value should be a map with
+one of those two keys. For example:</p>
+<p>diesel.toml:</p>
+<pre><code class="language-toml">[print_schema]
+# This will cause only the users and posts tables to be output
+filter = { only_tables = [&quot;users&quot;, &quot;posts&quot;] }
+
+# This will cause all tables *except* the comments table to be
+# output
+filter = { except_tables = [&quot;comments&quot;] }
+</code></pre>
+<h2 id="the-schema-field"><a class="header" href="#the-schema-field">The <code>schema</code> field</a></h2>
+<p>Specifies which schema to use when searching for tables. When set,
+<code>diesel print-schema</code> will always behave as though <code>--schema</code> were
+passed. This field only affects PostgreSQL. If no value is provided,
+the <code>public</code> schema will be searched.</p>
+<h2 id="the-import_types-field"><a class="header" href="#the-import_types-field">The <code>import_types</code> field</a></h2>
+<p>This field adds <code>use</code> statements to the top of every <code>table!</code>
+declaration. When set, <code>diesel print-schema</code> will behave as if
+<code>--import-types</code> were passed. When no value is given, only types from
+<code>diesel::sql_types</code> will be imported.</p>
+<p>diesel.toml:</p>
+<pre><code class="language-toml">[print_schema]
+# Add types from `diesel_full_text_search` like `tsvector`
+import_types = [&quot;diesel::sql_types::*&quot;, &quot;diesel_full_text_search::types::*&quot;]
+</code></pre>
+<h2 id="the-patch_file-field"><a class="header" href="#the-patch_file-field">The <code>patch_file</code> field</a></h2>
+<p>Specifies a <code>.patch</code> file to be applied to your schema after it is
+generated. Corresponds to the <code>--patch-file</code> option on the command
+line. This option requires <code>patch</code> from diffutils to be installed on
+your system.</p>
+<p>We can't provide an option for every possible customization to this
+file that you might want to make. This serves as a general purpose
+catch-all for schema customizations.</p>
+<p>The file should be a unified diff, which you can generate with <code>diff</code>
+or <code>git diff</code>. It's highly recommended that you provide more than 3
+context lines, especially if you have set <code>import_types</code>.</p>
+<p>You can easily generate this file by making the changes you want to
+<code>schema.rs</code>, and then running <code>git diff -U6 &gt; src/schema.patch</code>.</p>
+<h1 id="api-documentation"><a class="header" href="#api-documentation">API documentation</a></h1>
+<ul>
+<li><a href="https://docs.diesel.rs/master/diesel/index.html">master branch</a></li>
+<li><a href="https://docs.diesel.rs/1.4.x/diesel/index.html">1.4.x release</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+        
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+        
+        
+
+    </body>
+</html>

@@ -1,0 +1,504 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Schema in Depth - diesel.rs</title>
+        
+        
+
+
+        <!-- Custom HTML head -->
+        
+
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="A guide to diesel.rs">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        
+        <link rel="icon" href="../favicon.svg">
+        
+        
+        <link rel="shortcut icon" href="../favicon.png">
+        
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">About Diesel</a></li><li class="spacer"></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="../guides/index.html"><strong aria-hidden="true">1.</strong> Guides to Diesel</a></li><li class="chapter-item expanded "><a href="../guides/getting-started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="../guides/all-about-updates.html"><strong aria-hidden="true">3.</strong> All About Updates</a></li><li class="chapter-item expanded "><a href="../guides/all-about-inserts.html"><strong aria-hidden="true">4.</strong> All About Inserts</a></li><li class="chapter-item expanded "><a href="../guides/composing-applications.html"><strong aria-hidden="true">5.</strong> Composing Applications with Diesel</a></li><li class="chapter-item expanded "><a href="../guides/schema-in-depth.html" class="active"><strong aria-hidden="true">6.</strong> Schema in Depth</a></li><li class="chapter-item expanded "><a href="../guides/extending-diesel.html"><strong aria-hidden="true">7.</strong> Extending Diesel</a></li><li class="chapter-item expanded "><a href="../guides/configuring-diesel-cli.html"><strong aria-hidden="true">8.</strong> Configuring Diesel CLI</a></li><li class="chapter-item expanded affix "><li class="part-title">Docs</li><li class="chapter-item expanded "><a href="../docs/index.html"><strong aria-hidden="true">9.</strong> API documentation</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">diesel.rs</h1>
+
+                    <div class="right-buttons">
+                        
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
+                        <a href="https://github.com/diesel-rs/diesel" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="schema-in-depth"><a class="header" href="#schema-in-depth">Schema in Depth</a></h1>
+<p>In this guide we're going to look at what exactly <code>diesel print-schema</code>
+and <a href="https://docs.diesel.rs/diesel/macro.table.html"><code>table!</code></a> do. For <code>table!</code>, we will show a simplified version of the actual code
+that gets generated, and explain how each piece is relevant to you.
+If you've ever been confused about what exactly is getting generated,
+or what <code>use schema::posts::dsl::*</code> means, this is the right place to be.</p>
+<p><code>diesel print-schema</code> is a command provided by Diesel CLI.
+This command will establish a database connection, query for a list of all the tables
+and their columns, and generate <code>table!</code> invocations for each one.
+<code>diesel print-schema</code> will skip any table names which start with <code>__</code> (a double underscore).
+Diesel can be configured to automatically re-run <code>diesel print-schema</code>
+whenever you run migrations. See <a href="./configuring-diesel-cli.html">Configuring Diesel CLI</a> for details.</p>
+<p><code>table!</code> is where the bulk of the code gets generated. If you wanted to,
+you could see the actual exact code that gets generated
+by running <code>cargo rustc -- -Z unstable-options --pretty=expanded</code>.
+However, the output will be quite noisy, and there's a lot of code
+that won't actually be relevant to you.
+Instead we're going to go step by step through a <em>simplified</em> version of this output,
+which only has the code which you would use directly.</p>
+<p>For this example, we'll look at the code generated by this <code>table!</code> invocation:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>table! {
+    users {
+        id -&gt; Integer,
+        name -&gt; Text,
+        hair_color -&gt; Nullable&lt;Text&gt;,
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>If you just want to see the full simplified code and look through it yourself,
+you will find it at the end of this guide.</p>
+<p>The output of <code>table!</code> is always a Rust module with the same name.
+The first and most important part of this module will be the definition of the table itself:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct table;
+<span class="boring">}
+</span></code></pre></pre>
+<p>This is the struct that represents the user's table for the purpose of constructing SQL queries.
+It's usually referenced in code as <code>users::table</code> (or sometimes just <code>users</code>, more on that in a bit).
+Next, we'll see there's a module called <code>columns</code>, with one struct per column of the table.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct id;
+pub struct name;
+pub struct hair_color;
+<span class="boring">}
+</span></code></pre></pre>
+<p>Each of these structs uniquely represents each column of the table
+for the purpose of constructing SQL queries.
+Each of these structs will implement a trait called <a href="https://docs.diesel.rs/diesel/expression/trait.Expression.html"><code>Expression</code></a>,
+which indicates the SQL type of the column.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Expression for id {
+    type SqlType = Integer;
+}
+
+impl Expression for name {
+    type SqlType = Text;
+}
+
+impl Expression for hair_color {
+    type SqlType = Nullable&lt;Text&gt;;
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The <code>SqlType</code> type is at the core of how Diesel ensures that your queries are correct.
+This type will be used by <a href="https://docs.diesel.rs/diesel/expression_methods/trait.ExpressionMethods.html"><code>ExpressionMethods</code></a> to determine what things can and cannot
+be passed to methods like <code>eq</code>. It will also be used by <a href="https://docs.diesel.rs/diesel/query_source/trait.Queryable.html"><code>Queryable</code></a> to determine
+what types can be deserialized when this column appears in the select clause.</p>
+<p>In the columns module you'll also see a special column called <code>star</code>.
+Its definition looks like this:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct star;
+
+impl Expression for star {
+    type SqlType = ();
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>The <code>star</code> struct represents <code>users.*</code> in the query builder.
+This struct is only intended to be used for generating count queries.
+It should never be used directly. Diesel loads your data from a query by index,
+not by name. In order to ensure that we're actually getting the data
+for the column we think we are, Diesel never uses <code>*</code> when we actually want to
+get the data back out of it. We will instead generate an explicit select clause
+such as <code>SELECT users.id, users.name, users.hair_color</code>.</p>
+<p>Everything in the columns module will be re-exported from the parent module.
+This is why we can reference columns as <code>users::id</code>, and not <code>users::columns::id</code>.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub use self::columns::*;
+
+pub struct table;
+
+pub mod columns {
+    /* ... */
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Queries can often get quite verbose when everything has to be prefixed with <code>users::</code>.
+For this reason, Diesel also provides a convenience module called <code>dsl</code>.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod dsl {
+    pub use super::columns::{id, name, hair_color};
+    pub use super::table as users;
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>This module re-exports everything in <code>columns</code> module (except for <code>star</code>),
+and also re-exports the table but renamed to the actual name of the table.
+This means that instead of writing:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>users::table
+    .filter(users::name.eq(&quot;Sean&quot;))
+    .filter(users::hair_color.eq(&quot;black&quot;))
+<span class="boring">}
+</span></code></pre></pre>
+<p>we can instead write:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>users.filter(name.eq(&quot;Sean&quot;)).filter(hair_color.eq(&quot;black&quot;))
+<span class="boring">}
+</span></code></pre></pre>
+<p>The <code>dsl</code> module should only ever be imported for single functions.
+You should never have <code>use schema::users::dsl::*;</code> at the top of a module.
+Code like <code>#[derive(Insertable)]</code> will assume that <code>users</code> points to the module,
+not the table struct.</p>
+<p>Since <code>star</code> is otherwise inaccessible if you have <code>use schema::users::dsl::*;</code>,
+it is also exposed as an instance method on the table.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl table {
+    pub fn star(&amp;self) -&gt; star {
+        star
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Next, there are several traits that get implemented for <code>table</code>.
+You generally will never interact with these directly,
+but they are what enable most of the query builder functions
+found in <a href="https://docs.diesel.rs/diesel/query_dsl/index.html">the <code>query_dsl</code> module</a>,
+as well as use with <code>insert</code>, <code>update</code>, and <code>delete</code>.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl AsQuery for table {
+    /* body omitted */
+}
+
+impl Table for table {
+    /* body omitted */
+}
+
+impl IntoUpdateTarget for table {
+    /* body omitted */
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Finally, there are a few small type definitions
+and constants defined to make your life easier.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub const all_columns: (id, name, hair_color) = (id, name, hair_color);
+
+pub type SqlType = (Integer, Text, Nullable&lt;Text&gt;);
+
+pub type BoxedQuery&lt;'a, DB, ST = SqlType&gt; = BoxedSelectStatement&lt;'a, ST, table, DB&gt;;
+<span class="boring">}
+</span></code></pre></pre>
+<p><code>all_columns</code> is just a tuple of all of the column on the table.
+It is what is used to generate the <code>select</code> statement for a query on this table
+when you don't specify one explicitly. If you ever want to reference <code>users::star</code>
+for things that aren't count queries, you probably want <code>users::all_columns</code> instead.</p>
+<p><code>SqlType</code> will be the SQL type of <code>all_columns</code>.
+It's rare to need to reference this directly,
+but it's less verbose than <code>&lt;&lt;users::table as Table&gt;::AllColumns as Expression&gt;::SqlType</code>
+when you need it.</p>
+<p>Finally, there is a helper type for referencing boxed queries built from this table.
+This means that instead of writing <code>BoxedSelectStatement&lt;'static, users::SqlType, users::table, Pg&gt;</code>
+you can instead write <code>users::BoxedQuery&lt;'static, Pg&gt;</code>.
+You can optionally specify the SQL type as well if the query has a custom select clause.</p>
+<p>And that's everything! Here is the full code that was generated for this table:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod users {
+    pub use self::columns::*;
+
+    pub mod dsl {
+        pub use super::columns::{id, name, hair_color};
+        pub use super::table as users;
+    }
+
+    pub const all_columns: (id, name, hair_color) = (id, name, hair_color);
+
+    pub struct table;
+
+    impl table {
+        pub fn star(&amp;self) -&gt; star {
+            star
+        }
+    }
+
+    pub type SqlType = (Integer, Text, Nullable&lt;Text&gt;);
+
+    pub type BoxedQuery&lt;'a, DB, ST = SqlType&gt; = BoxedSelectStatement&lt;'a, ST, table, DB&gt;;
+
+    impl AsQuery for table {
+        /* body omitted */
+    }
+
+    impl Table for table {
+        /* body omitted */
+    }
+
+    impl IntoUpdateTarget for table {
+        /* body omitted */
+    }
+
+    pub mod columns {
+        pub struct star;
+
+        impl Expression for star {
+            type SqlType = ();
+        }
+
+        pub struct id;
+
+        impl Expression for id {
+            type SqlType = Integer;
+        }
+
+        pub struct name;
+
+        impl Expression for name {
+            type SqlType = Text;
+        }
+
+        pub struct hair_color;
+
+        impl Expression for hair_color {
+            type SqlType = Nullable&lt;Text&gt;;
+        }
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../guides/composing-applications.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../guides/extending-diesel.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="../guides/composing-applications.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="../guides/extending-diesel.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
